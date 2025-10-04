@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naveen Busiraju - Gen AI Developer Portfolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-offset="70">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <canvas id="loader-canvas"></canvas>
+        <div class="loading-text">LOADING</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#home">Naveen Busiraju</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#experience">Experience</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#skills">Skills</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#education">Education</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="text-white" style="padding-top: 120px; padding-bottom: 80px; position: relative; min-height: 100vh; display: flex; align-items: center;">
+        <canvas id="hero-canvas"></canvas>
+        <div class="container" style="position: relative; z-index: 2;">
+            <div class="row align-items-center">
+                <div class="col-lg-8 hero-content">
+                    <h1 class="display-3 fw-bold mb-3">Venkata Naveen Busiraju</h1>
+                    <p class="lead fs-4 mb-4">Gen AI Developer | Full-Stack Engineer | Cloud Solutions Architect</p>
+
+                    <!-- Dynamic Experience Counter -->
+                    <div class="experience-badge mb-4">
+                        <i class="bi bi-briefcase-fill"></i>
+                        <span id="experience-counter">...</span> of Professional Experience
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-3 mb-4">
+                        <a href="mailto:naveenbusiraju@gmail.com" class="btn btn-light btn-lg">
+                            <i class="bi bi-envelope"></i> Email
+                        </a>
+                        <a href="https://www.linkedin.com/in/naveenbusiraju/" target="_blank" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-linkedin"></i> LinkedIn
+                        </a>
+                        <a href="https://x.com/naveenbusiraju1" target="_blank" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-twitter-x"></i> Twitter
+                        </a>
+                    </div>
+                    <div class="d-flex flex-wrap gap-4 text-white-50">
+                        <div>
+                            <i class="bi bi-telephone-fill me-1"></i> +44 7555541485
+                        </div>
+                        <div>
+                            <i class="bi bi-envelope-fill me-1"></i> naveenbusiraju@gmail.com
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title text-center">About Me</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <p class="lead">
+                                Dynamic and results-driven Gen AI Developer with proven full-stack expertise (Java, Spring Boot, Node.js, Angular, Python)
+                                and a passion for leveraging cutting-edge technologies to drive business success.
+                            </p>
+                            <p>
+                                Adept at mapping business requirements to state-of-the-art (SOTA) AI solutions, including generative AI and
+                                retrieval-augmented generation (RAG). Skilled in cloud-native development (GCP, AWS), automation, and modernizing
+                                legacy systems, consistently optimizing performance across monolithic and microservices architectures.
+                                Excels at leading teams through large-scale transformations, ensuring scalability, and delivering measurable
+                                impact through innovative AI-driven applications.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Key Highlights -->
+                    <div class="row g-4 mt-3">
+                        <div class="col-md-4">
+                            <div class="card h-100 border-primary shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-robot fs-1 text-primary mb-3"></i>
+                                    <h5 class="card-title text-primary">Gen AI & ML</h5>
+                                    <p class="card-text">
+                                        DocLens RAG, NER models, custom chatbots with LangChain & Azure AI Search
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-success shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-code-square fs-1 text-success mb-3"></i>
+                                    <h5 class="card-title text-success">Full-Stack</h5>
+                                    <p class="card-text">
+                                        Java Spring Boot, Node.js, Angular, Python microservices architecture
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-info shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-cloud-fill fs-1 text-info mb-3"></i>
+                                    <h5 class="card-title text-info">Cloud & DevOps</h5>
+                                    <p class="card-text">
+                                        GCP Certified, AWS, Docker, Kubernetes, CI/CD automation
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience">
+        <div class="container">
+            <h2 class="section-title text-center">Work Experience</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- Current Role -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h4 class="fw-bold mb-1">Gen AI Application Developer</h4>
+                                    <h5 class="text-muted">Atos</h5>
+                                </div>
+                                <span class="badge bg-primary fs-6">Dec 2023 - Present</span>
+                            </div>
+
+                            <h6 class="text-primary mt-4 mb-3">Performance Analysis & Tuning</h6>
+                            <ul class="mb-3">
+                                <li>Developed and evaluated performance metrics for a DocLens module that leverages Azure AI Search, LLMs, and RAG to extract critical information from contracts</li>
+                                <li>Conducted detailed performance tests and produced benchmarking reports for internal stakeholders, recommending optimization strategies to improve throughput and latency</li>
+                                <li>Utilized Python (NumPy, Pandas) for data pre-processing, feature engineering, and performance profiling of ML pipelines</li>
+                            </ul>
+
+                            <h6 class="text-primary mt-4 mb-3">ML/AI Development & Deployment</h6>
+                            <ul class="mb-3">
+                                <li>Led the fine-tuning of NER models to streamline contract metadata extraction, reducing manual review time for customers</li>
+                                <li>Built an application-specific chatbot using a custom RAG framework, significantly decreasing user queries in staging</li>
+                                <li>Implemented hyperparameter tuning and algorithm experiments to optimize model accuracy while maintaining computational efficiency</li>
+                            </ul>
+
+                            <h6 class="text-primary mt-4 mb-3">Infrastructure & Automation</h6>
+                            <ul class="mb-0">
+                                <li>Drove CI/CD efforts with Docker, Kubernetes, and GitHub Actions to automate testing and deploy ML models on GCP</li>
+                                <li>Migrated parts of the legacy architecture to Angular and Node.js, ensuring a robust and scalable system design</li>
+                                <li>Integrated Java Spring Boot with GCP for the Decarbonization Project, focusing on high performance and reliability</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Previous Role -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h4 class="fw-bold mb-1">Associate Consultant</h4>
+                                    <h5 class="text-muted">Atos</h5>
+                                </div>
+                                <span class="badge bg-secondary fs-6">Nov 2019 - Jan 2022</span>
+                            </div>
+                            <ul class="mb-0">
+                                <li>Led continuous integration efforts, implementing GitHub Actions, Docker, and Kubernetes across GCP, ensuring efficient and reliable software delivery</li>
+                                <li>Migrated legacy projects to Angular and Node.js, enhancing performance and workflow efficiency by integrating cutting-edge GCP services</li>
+                                <li>Deployed and managed Dockerized microservices on GCP, ensuring uniformity between development and production environments</li>
+                                <li>Configured and optimized cloud infrastructure on GCP to bolster application performance and enhance security measures</li>
+                                <li>Contributed to the Decarbonization Project by developing and integrating Java Spring Boot solutions across GCP</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-title text-center">Technical Skills</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- Programming -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-code-slash"></i> Programming/Scripting Languages</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge bg-primary fs-6">Python</span>
+                                <span class="badge bg-primary fs-6">Java</span>
+                                <span class="badge bg-primary fs-6">SQL</span>
+                                <span class="badge bg-primary fs-6">Node.js</span>
+                                <span class="badge bg-primary fs-6">JavaScript</span>
+                                <span class="badge bg-primary fs-6">Angular</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI/ML Tools -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="bi bi-robot"></i> Python Frameworks & AI/ML Tools</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="text-muted mb-3">Gen AI & LLM Frameworks</h6>
+                            <div class="d-flex flex-wrap gap-2 mb-4">
+                                <span class="badge bg-success fs-6">LangChain</span>
+                                <span class="badge bg-success fs-6">LlamaIndex</span>
+                                <span class="badge bg-success fs-6">Transformers</span>
+                                <span class="badge bg-success fs-6">HuggingFace</span>
+                            </div>
+
+                            <h6 class="text-muted mb-3">Machine Learning & Deep Learning</h6>
+                            <div class="d-flex flex-wrap gap-2 mb-4">
+                                <span class="badge bg-success fs-6">TensorFlow</span>
+                                <span class="badge bg-success fs-6">PyTorch</span>
+                                <span class="badge bg-success fs-6">Scikit-Learn</span>
+                            </div>
+
+                            <h6 class="text-muted mb-3">NLP & Data Science</h6>
+                            <div class="d-flex flex-wrap gap-2 mb-4">
+                                <span class="badge bg-success fs-6">NLTK</span>
+                                <span class="badge bg-success fs-6">spaCy</span>
+                                <span class="badge bg-success fs-6">Pandas</span>
+                                <span class="badge bg-success fs-6">NumPy</span>
+                                <span class="badge bg-success fs-6">Matplotlib</span>
+                            </div>
+
+                            <h6 class="text-muted mb-3">Development Tools</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge bg-success fs-6">Streamlit</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DevOps & Cloud -->
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0"><i class="bi bi-gear-fill"></i> DevOps Tools</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge bg-warning text-dark fs-6">Docker</span>
+                                        <span class="badge bg-warning text-dark fs-6">Kubernetes</span>
+                                        <span class="badge bg-warning text-dark fs-6">GitHub</span>
+                                        <span class="badge bg-warning text-dark fs-6">GitHub Actions</span>
+                                        <span class="badge bg-warning text-dark fs-6">Jenkins</span>
+                                        <span class="badge bg-warning text-dark fs-6">Terraform</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="bi bi-cloud-fill"></i> Cloud Platforms</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge bg-info fs-6">Google Cloud (GCP)</span>
+                                        <span class="badge bg-info fs-6">AWS</span>
+                                        <span class="badge bg-info fs-6">Azure AI Search</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tools & Visualization -->
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-secondary text-white">
+                                    <h5 class="mb-0"><i class="bi bi-laptop"></i> IDE & Tools</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge bg-secondary fs-6">Jupyter Notebook</span>
+                                        <span class="badge bg-secondary fs-6">VS Code</span>
+                                        <span class="badge bg-secondary fs-6">Postman</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-danger text-white">
+                                    <h5 class="mb-0"><i class="bi bi-bar-chart-fill"></i> Visualization</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge bg-danger fs-6">Google Data Studio</span>
+                                        <span class="badge bg-danger fs-6">Power BI</span>
+                                        <span class="badge bg-danger fs-6">Power Apps</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education">
+        <div class="container">
+            <h2 class="section-title text-center">Education & Certifications</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- Education -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="text-primary mb-4"><i class="bi bi-mortarboard-fill"></i> Education</h5>
+
+                            <div class="mb-4">
+                                <h5 class="fw-bold mb-1">Master's Degree - MSc Computer Science</h5>
+                                <p class="mb-1 text-muted"><i class="bi bi-building"></i> University of East London</p>
+                                <p class="text-muted"><i class="bi bi-calendar"></i> Feb 2022 - Feb 2024</p>
+                            </div>
+
+                            <div>
+                                <h5 class="fw-bold mb-1">Bachelor's Degree - Computer Science and Engineering</h5>
+                                <p class="mb-1 text-muted"><i class="bi bi-building"></i> Gudlavalleru Engineering College</p>
+                                <p class="text-muted"><i class="bi bi-calendar"></i> Jul 2015 - Apr 2019</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Certifications -->
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="text-primary mb-4"><i class="bi bi-award-fill"></i> Certifications</h5>
+
+                            <!-- AWS Certification -->
+                            <div class="d-flex align-items-center mb-4 pb-4 border-bottom border-secondary">
+                                <i class="bi bi-patch-check-fill text-warning fs-1 me-3"></i>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">AWS Certified DevOps Engineer – Professional</h5>
+                                    <p class="mb-1" style="opacity: 0.8;">Amazon Web Services</p>
+                                    <p class="mb-0" style="opacity: 0.7;"><small>Issued: Feb 2025 • Expires: Feb 2028</small></p>
+                                    <a href="https://www.credly.com/badges/9bae1e0a-7456-4fd9-b27e-8df2279c40aa"
+                                       target="_blank"
+                                       class="btn btn-sm btn-outline-warning mt-2">
+                                        <i class="bi bi-link-45deg"></i> View Credential
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- GCP Certification -->
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-patch-check-fill text-success fs-1 me-3"></i>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">Google Cloud Certified Associate Cloud Engineer</h5>
+                                    <p class="mb-1" style="opacity: 0.8;">Google Cloud</p>
+                                    <p class="mb-0" style="opacity: 0.7;"><small>Credential ID: ZVW1QW • Issued: 2021</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interests -->
+                    <div class="card mt-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="text-primary mb-3"><i class="bi bi-heart-fill"></i> Interests</h5>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge bg-secondary fs-6"><i class="bi bi-code-slash"></i> Coding</span>
+                                <span class="badge bg-secondary fs-6"><i class="bi bi-film"></i> Watching Sci-Fi Movies</span>
+                                <span class="badge bg-secondary fs-6"><i class="bi bi-egg-fried"></i> Cooking</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="text-white">
+        <div class="container">
+            <h2 class="section-title text-center text-white">Get In Touch</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-lg">
+                        <div class="card-body p-5">
+                            <div class="row mb-4">
+                                <div class="col-md-4 text-center mb-3 mb-md-0">
+                                    <i class="bi bi-envelope-fill fs-1 text-primary"></i>
+                                    <h6 class="mt-2">Email</h6>
+                                    <a href="mailto:naveenbusiraju@gmail.com" class="text-decoration-none">naveenbusiraju@gmail.com</a>
+                                </div>
+                                <div class="col-md-4 text-center mb-3 mb-md-0">
+                                    <i class="bi bi-telephone-fill fs-1 text-success"></i>
+                                    <h6 class="mt-2">Phone</h6>
+                                    <a href="tel:+447555541485" class="text-decoration-none">+44 7555541485</a>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <i class="bi bi-linkedin fs-1 text-info"></i>
+                                    <h6 class="mt-2">LinkedIn</h6>
+                                    <a href="https://www.linkedin.com/in/naveenbusiraju/" target="_blank" class="text-decoration-none">naveenbusiraju</a>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <h5 class="mb-3">Send me a message</h5>
+                            <form>
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email address</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message" class="form-label">Message</label>
+                                    <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="bi bi-send"></i> Send Message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-white text-center py-4">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Venkata Naveen Busiraju. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/js/experience-counter.js"></script>
+    <script type="module" src="/js/theme-toggle.js"></script>
+    <script type="module" src="/js/three-background.js"></script>
+    <script type="module" src="/js/animations.js"></script>
+    <script type="module" src="/js/interactions.js"></script>
+</body>
+</html>
