@@ -1,0 +1,8 @@
+
+services:
+  app:
+    build: .
+    ports:
+      - "3100:3000"
+    environment:
+      - MONGO_URL=mongodb+srv://naveenbusiraju:Naveen%40529@cluster0.gmx8b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
