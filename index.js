@@ -12,6 +12,19 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Portfolio running at http://localhost:${port}`);
+});
+
+server.on('error', (err) => {
+  console.error('Server error:', err);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err);
+});
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received');
+  server.close();
 });
