@@ -1,0 +1,161 @@
+{
+  "personal": {
+    "name": "Venkata Naveen Busiraju",
+    "title": "Gen AI Developer | Full-Stack Engineer | Cloud Solutions Architect",
+    "email": "naveenbusiraju@gmail.com",
+    "phone": "+91 9493534035",
+    "careerStartDate": "2019-11-01",
+    "location": "India"
+  },
+  "social": {
+    "linkedin": "https://www.linkedin.com/in/naveenbusiraju/",
+    "twitter": "https://x.com/naveenbusiraju1",
+    "github": ""
+  },
+  "about": {
+    "profile": "Dynamic and results-driven Gen AI Developer with proven full-stack expertise (Java, Spring Boot, Node.js, Angular, Python) and a passion for leveraging cutting-edge technologies to drive business success. Adept at mapping business requirements to state-of-the-art (SOTA) AI solutions, including generative AI and retrieval-augmented generation (RAG). Skilled in cloud-native development (GCP, AWS), automation, and modernizing legacy systems, consistently optimizing performance across monolithic and microservices architectures. Excels at leading teams through large-scale transformations, ensuring scalability, and delivering measurable impact through innovative AI-driven applications.",
+    "highlights": [
+      {
+        "icon": "robot",
+        "title": "Gen AI & ML",
+        "description": "LangChain, LangGraph, RAG systems, Azure OpenAI, Multi-agent workflows"
+      },
+      {
+        "icon": "code",
+        "title": "Full-Stack",
+        "description": "Java Spring Boot, Node.js, Angular, Python microservices architecture"
+      },
+      {
+        "icon": "cloud",
+        "title": "Cloud & DevOps",
+        "description": "GCP Certified, AWS, Docker, Kubernetes, CI/CD automation"
+      }
+    ]
+  },
+  "experience": [
+    {
+      "title": "GEN AI Application Developer",
+      "company": "Atos",
+      "location": "London, UK",
+      "startDate": "Dec 2023",
+      "endDate": "Present",
+      "isCurrent": true,
+      "responsibilities": [
+        {
+          "category": "ML/AI Development & Deployment",
+          "items": [
+            "Engineered an enterprise-grade Long-context RAG (LRA) system with Azure OpenAI GPT-4, LangChain, and LangGraph to analyze learning course materials (PDF, DOCX, PPTX, XLSX) against a Data Quality Checklist (DQC). Automated compliance reporting via SharePoint, cutting review time by 65%.",
+            "Orchestrated a multi-agent workflow via LangGraph + MCP with dedicated agents for retrieval, checklist validation, review synthesis, and orchestration, ensuring schema enforcement and fault tolerance.",
+            "Developed an Account Receivable Email Agent that classified, extracted, and validated invoice data from emails and attachments, reducing AR resolution time by 55%.",
+            "Built an invoice-understanding pipeline combining OCR (pdfplumber, pytesseract) + Llama-3 prompting + agent validation, achieving 96% field-level accuracy and generating ERP-ready JSON.",
+            "Experimented with LLM fine-tuning (LoRA/QLoRA) using Hugging Face Transformers to adapt models for domain-specific document Q&A.",
+            "Implemented hyperparameter tuning and algorithm experiments to optimize model accuracy while maintaining computational efficiency."
+          ]
+        },
+        {
+          "category": "Infrastructure & Automation",
+          "items": [
+            "Drove CI/CD efforts with Docker, Kubernetes, and GitHub Actions to automate testing and deploy ML models on GCP and AWS.",
+            "Migrated parts of the legacy architecture to Angular and Node.js, ensuring a robust and scalable system design.",
+            "Integrated Java Spring Boot with GCP for the Decarbonization Project, focusing on high performance and reliability."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Associate Consultant",
+      "company": "Atos",
+      "location": "Chennai, India / Remote",
+      "startDate": "Nov 2019",
+      "endDate": "Jan 2022",
+      "isCurrent": false,
+      "responsibilities": [
+        {
+          "category": "General",
+          "items": [
+            "Led continuous integration efforts, implementing GitHub Actions, Docker, and Kubernetes across both GCP, ensuring efficient and reliable software delivery.",
+            "Migrated legacy projects to Angular and Node.js, enhancing performance and workflow efficiency by integrating cutting-edge GCP services.",
+            "Deployed and managed Dockerized microservices on GCP, ensuring uniformity between development and production environments and minimizing deployment risks.",
+            "Configured and optimized cloud infrastructure on GCP to bolster application performance and enhance security measures.",
+            "Contributed to the Decarbonization Project by developing and integrating Java Spring Boot solutions across GCP, driving project success and sustainability initiatives."
+          ]
+        }
+      ]
+    }
+  ],
+  "skills": {
+    "programming": {
+      "title": "Programming/Scripting Languages",
+      "items": ["Python", "Java", "SQL", "Node.js", "JavaScript", "Angular"]
+    },
+    "aiml": {
+      "title": "Python Frameworks & AI/ML Tools",
+      "categories": [
+        {
+          "name": "Gen AI & LLM Frameworks",
+          "items": ["LangChain", "LlamaIndex", "Transformers", "HuggingFace"]
+        },
+        {
+          "name": "Machine Learning & Deep Learning",
+          "items": ["TensorFlow", "PyTorch", "Scikit-Learn"]
+        },
+        {
+          "name": "NLP & Data Science",
+          "items": ["NLTK", "spaCy", "Pandas", "NumPy", "Matplotlib"]
+        },
+        {
+          "name": "Development Tools",
+          "items": ["Streamlit"]
+        }
+      ]
+    },
+    "devops": {
+      "title": "DevOps Tools",
+      "items": ["Docker", "Kubernetes", "GitHub", "GitHub Actions", "Jenkins", "Terraform"]
+    },
+    "cloud": {
+      "title": "Cloud Platforms",
+      "items": ["Google Cloud (GCP)", "AWS", "Azure AI Search"]
+    },
+    "tools": {
+      "title": "IDE & Tools",
+      "items": ["Jupyter Notebook", "VS Code", "Postman"]
+    },
+    "visualization": {
+      "title": "Visualization",
+      "items": ["Google Data Studio", "Power BI", "Power Apps"]
+    }
+  },
+  "education": [
+    {
+      "degree": "Master's Degree - MSc Computer Science",
+      "institution": "University of East London",
+      "startDate": "Feb 2022",
+      "endDate": "Feb 2024"
+    },
+    {
+      "degree": "Bachelor's Degree - Computer Science and Engineering",
+      "institution": "Gudlavalleru Engineering College",
+      "startDate": "Jul 2015",
+      "endDate": "Apr 2019"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "AWS Certified DevOps Engineer – Professional",
+      "issuer": "Amazon Web Services",
+      "issueDate": "Feb 2025",
+      "expiryDate": "Feb 2028",
+      "credentialUrl": "https://www.credly.com/badges/9bae1e0a-7456-4fd9-b27e-8df2279c40aa"
+    },
+    {
+      "name": "Google Cloud Certified Associate Cloud Engineer",
+      "issuer": "Google Cloud",
+      "credentialId": "ZVW1QW",
+      "issueDate": "2021",
+      "expiryDate": null,
+      "credentialUrl": null
+    }
+  ],
+  "interests": ["Coding", "Watching Sci-Fi Movies", "Cooking"]
+}
