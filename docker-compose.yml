@@ -1,6 +1,7 @@
 services:
   portfolio:
-    build: .
+    # Use the image built by GitHub Actions
+    image: ghcr.io/vnaveenb/portfolio:latest
     container_name: portfolio
     restart: unless-stopped
     ports:
@@ -8,6 +9,20 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  # Watchtower automatically updates the portfolio when a new image is pushed
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=300 # Check every 300 seconds (5 minutes)
+    command: --interval 300
 
   # Uncomment below after setting up cloudflared tunnel
   # cloudflared:
