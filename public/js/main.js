@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderSkills(profileData.skills);
         renderEducation(profileData.education);
         renderCertifications(profileData.certifications);
-        calculateExperience(profileData.personal.careerStartDate);
+        calculateExperience(profileData.experience);
     }
 
     // Initialize interactions
@@ -36,18 +36,34 @@ async function loadProfileData() {
     }
 }
 
-// Calculate and display experience
-function calculateExperience(startDate) {
-    const start = new Date(startDate);
-    const now = new Date();
-    
-    let years = now.getFullYear() - start.getFullYear();
-    let months = now.getMonth() - start.getMonth();
-    
-    if (months < 0) {
-        years--;
-        months += 12;
+// Calculate and display experience (sums only actual working periods, excluding gaps)
+function calculateExperience(experienceEntries) {
+    const monthNames = {
+        'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+        'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+    };
+
+    function parseDate(dateStr) {
+        if (dateStr === 'Present') return new Date();
+        const parts = dateStr.split(' ');
+        const month = monthNames[parts[0]];
+        const year = parseInt(parts[1]);
+        return new Date(year, month, 1);
     }
+
+    let totalMonths = 0;
+
+    experienceEntries.forEach(job => {
+        const start = parseDate(job.startDate);
+        const end = parseDate(job.endDate);
+        // +1 to include both start and end months
+        let diffMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
+        if (diffMonths < 0) diffMonths = 0;
+        totalMonths += diffMonths;
+    });
+
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
     
     let experienceText = '';
     if (years > 0) {
