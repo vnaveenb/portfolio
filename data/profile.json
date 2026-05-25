@@ -12,6 +12,29 @@
     "twitter": "https://x.com/naveenbusiraju1",
     "github": ""
   },
+  "projects": [
+    {
+      "title": "Agent Tool Calls & Retries",
+      "description": "An AI agent demo showcasing robust tool call orchestration with automatic retry logic, built on Claude's API.",
+      "liveUrl": "https://agent.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/agent-tool-calls-retries",
+      "tags": ["Claude API", "AI Agents", "Tool Use", "Retries"]
+    },
+    {
+      "title": "RAG Eval Suite",
+      "description": "Evaluation framework for Retrieval-Augmented Generation pipelines — benchmarking retrieval quality, answer faithfulness, and context relevance.",
+      "liveUrl": null,
+      "githubUrl": "https://github.com/vnaveenb/rag-eval-suite",
+      "tags": ["RAG", "Evaluation", "LangChain", "Python"]
+    },
+    {
+      "title": "GenAI Roadmap",
+      "description": "Mobile-first study companion for learning the GenAI roadmap anywhere, with structure and momentum.",
+      "liveUrl": "https://naveenb.dev/",
+      "githubUrl": null,
+      "tags": ["GenAI", "Mobile-first", "Education"]
+    }
+  ],
   "about": {
     "profile": "Dynamic and results-driven Gen AI Developer with proven full-stack expertise (Java, Spring Boot, Node.js, Angular, Python) and a passion for leveraging cutting-edge technologies to drive business success. Adept at mapping business requirements to state-of-the-art (SOTA) AI solutions, including generative AI and retrieval-augmented generation (RAG). Skilled in cloud-native development (GCP, AWS), automation, and modernizing legacy systems, consistently optimizing performance across monolithic and microservices architectures. Excels at leading teams through large-scale transformations, ensuring scalability, and delivering measurable impact through innovative AI-driven applications.",
     "highlights": [
