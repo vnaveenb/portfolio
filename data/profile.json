@@ -15,17 +15,17 @@
   "projects": [
     {
       "title": "Agent Tool Calls & Retries",
-      "description": "An AI agent demo showcasing robust tool call orchestration with automatic retry logic, built on Claude's API.",
+      "description": "Production-grade ReAct agent with native function calling, exponential backoff retries, and full JSON execution tracing. Hot-swappable LLMs via LiteLLM (Claude, GPT-4o, Gemini, Ollama). Includes LangGraph, CrewAI, and Google A2A protocol integrations — 31 tests.",
       "liveUrl": "https://agent.naveenb.dev/",
       "githubUrl": "https://github.com/vnaveenb/agent-tool-calls-retries",
-      "tags": ["Claude API", "AI Agents", "Tool Use", "Retries"]
+      "tags": ["ReAct Agent", "LiteLLM", "LangGraph", "CrewAI", "FastAPI"]
     },
     {
       "title": "RAG Eval Suite",
-      "description": "Evaluation framework for Retrieval-Augmented Generation pipelines — benchmarking retrieval quality, answer faithfulness, and context relevance.",
+      "description": "Production-grade RAG system with RAGAS quality metrics (faithfulness, answer relevancy, context precision & recall), hot-swappable LLMs via LiteLLM, local sentence-transformers embeddings, ChromaDB vector store, and a FastAPI backend with hot-reload.",
       "liveUrl": null,
       "githubUrl": "https://github.com/vnaveenb/rag-eval-suite",
-      "tags": ["RAG", "Evaluation", "LangChain", "Python"]
+      "tags": ["RAG", "RAGAS", "ChromaDB", "LiteLLM", "FastAPI"]
     },
     {
       "title": "GenAI Roadmap",
