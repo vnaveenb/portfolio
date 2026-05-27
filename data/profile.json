@@ -28,9 +28,37 @@
       "tags": ["RAG", "RAGAS", "ChromaDB", "LiteLLM", "FastAPI"]
     },
     {
+      "title": "Token Cost Budget Dashboard",
+      "description": "Real-time LLM usage tracker with per-request cost attribution, budget enforcement, team/project-level quotas, and a live dashboard. Works with any LiteLLM-supported provider — 40 tests.",
+      "liveUrl": "https://cost.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/token-cost-budget-dashboard",
+      "tags": ["LiteLLM", "FastAPI", "SQLite", "Budget Enforcement", "Python"]
+    },
+    {
+      "title": "Carbon Calculator Platform",
+      "description": "Role-based web app for laptop lifecycle carbon analysis with vendor data ingestion, country-level emission factors, user-side comparison dashboards, and admin controls.",
+      "liveUrl": "https://carbon.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/carbon-calculator",
+      "tags": ["Node.js", "Express", "MySQL", "Docker", "GitHub Actions"]
+    },
+    {
+      "title": "Async Inference Queue",
+      "description": "Redis-backed priority job queue for LLM inference with configurable workers, backpressure, dead-letter queue, and real-time monitoring dashboard.",
+      "liveUrl": "https://llmqueue.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/async-llm-inference-queue",
+      "tags": ["Redis", "FastAPI", "LiteLLM", "Docker", "Python"]
+    },
+    {
+      "title": "Model Fallback Router",
+      "description": "Production-grade LLM routing proxy with automatic failover, SLA enforcement, circuit breaker, and real-time dashboard. Works with any LiteLLM-supported provider (Gemini, OpenAI, Anthropic).",
+      "liveUrl": "https://llm-router.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/llm-model-fallback-router",
+      "tags": ["LiteLLM", "FastAPI", "Circuit Breaker", "Docker", "Python"]
+    },
+    {
       "title": "GenAI Roadmap",
       "description": "Mobile-first study companion for learning the GenAI roadmap anywhere, with structure and momentum.",
-      "liveUrl": "https://naveenb.dev/",
+      "liveUrl": "https://roadmap.naveenb.dev/",
       "githubUrl": null,
       "tags": ["GenAI", "Mobile-first", "Education"]
     }

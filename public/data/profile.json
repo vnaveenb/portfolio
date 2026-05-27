@@ -29,17 +29,31 @@
     },
     {
       "title": "Token Cost Budget Dashboard",
-      "description": "Real-time LLM usage tracker with per-request cost attribution, budget enforcement, and live Chart.js dashboard. LiteLLM callback integration logs every call transparently — no app changes needed. Supports per-project/user quotas with warn/reject actions and a pricing table for 7+ models. 40 tests.",
+      "description": "Real-time LLM usage tracker with per-request cost attribution, budget enforcement, team/project-level quotas, and a live dashboard. Works with any LiteLLM-supported provider — 40 tests.",
       "liveUrl": "https://cost.naveenb.dev/",
       "githubUrl": "https://github.com/vnaveenb/token-cost-budget-dashboard",
-      "tags": ["LiteLLM", "FastAPI", "SQLite", "Chart.js", "Budget Tracking"]
+      "tags": ["LiteLLM", "FastAPI", "SQLite", "Budget Enforcement", "Python"]
     },
     {
       "title": "Carbon Calculator Platform",
-      "description": "Role-based web app for laptop lifecycle carbon analysis. Vendors upload emission profiles via form or bulk XLS, admins manage country-level emission factors, and users compare device carbon impact with interactive charts and PDF export. Multi-stage Docker image with GitHub Actions CI/CD.",
+      "description": "Role-based web app for laptop lifecycle carbon analysis with vendor data ingestion, country-level emission factors, user-side comparison dashboards, and admin controls.",
       "liveUrl": "https://carbon.naveenb.dev/",
       "githubUrl": "https://github.com/vnaveenb/carbon-calculator",
-      "tags": ["Node.js", "Express", "MySQL", "EJS", "Docker"]
+      "tags": ["Node.js", "Express", "MySQL", "Docker", "GitHub Actions"]
+    },
+    {
+      "title": "Async Inference Queue",
+      "description": "Redis-backed priority job queue for LLM inference with configurable workers, backpressure, dead-letter queue, and real-time monitoring dashboard.",
+      "liveUrl": "https://llmqueue.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/async-llm-inference-queue",
+      "tags": ["Redis", "FastAPI", "LiteLLM", "Docker", "Python"]
+    },
+    {
+      "title": "Model Fallback Router",
+      "description": "Production-grade LLM routing proxy with automatic failover, SLA enforcement, circuit breaker, and real-time dashboard. Works with any LiteLLM-supported provider (Gemini, OpenAI, Anthropic).",
+      "liveUrl": "https://llm-router.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/llm-model-fallback-router",
+      "tags": ["LiteLLM", "FastAPI", "Circuit Breaker", "Docker", "Python"]
     },
     {
       "title": "GenAI Roadmap",
@@ -50,7 +64,7 @@
     }
   ],
   "about": {
-    "profile": "Dynamic and results-driven Gen AI Developer with proven full-stack expertise (Java, Spring Boot, Node.js, Angular, Python) and a passion for leveraging cutting-edge technologies to drive business success. Adept at mapping business requirements to state-of-the-art AI solutions, including generative AI and retrieval-augmented generation (RAG). Skilled in cloud-native development (GCP, AWS), automation, and modernizing legacy systems, consistently optimizing performance across monolithic and microservices architectures. Excels at leading teams through large-scale transformations, ensuring scalability, and delivering measurable impact through innovative AI-driven applications.",
+    "profile": "Dynamic and results-driven Gen AI Developer with proven full-stack expertise (Java, Spring Boot, Node.js, Angular, Python) and a passion for leveraging cutting-edge technologies to drive business success. Adept at mapping business requirements to state-of-the-art (SOTA) AI solutions, including generative AI and retrieval-augmented generation (RAG). Skilled in cloud-native development (GCP, AWS), automation, and modernizing legacy systems, consistently optimizing performance across monolithic and microservices architectures. Excels at leading teams through large-scale transformations, ensuring scalability, and delivering measurable impact through innovative AI-driven applications.",
     "highlights": [
       {
         "icon": "robot",
@@ -81,7 +95,7 @@
         {
           "category": "ML/AI Development & Deployment",
           "items": [
-            "Engineered an enterprise-grade Long-context RAG system with Azure OpenAI GPT-4, LangChain, and LangGraph to analyze learning course materials (PDF, DOCX, PPTX, XLSX) against a Data Quality Checklist. Automated compliance reporting via SharePoint, cutting review time by 65%.",
+            "Engineered an enterprise-grade Long-context RAG (LRA) system with Azure OpenAI GPT-4, LangChain, and LangGraph to analyze learning course materials (PDF, DOCX, PPTX, XLSX) against a Data Quality Checklist (DQC). Automated compliance reporting via SharePoint, cutting review time by 65%.",
             "Orchestrated a multi-agent workflow via LangGraph + MCP with dedicated agents for retrieval, checklist validation, review synthesis, and orchestration, ensuring schema enforcement and fault tolerance.",
             "Developed an Account Receivable Email Agent that classified, extracted, and validated invoice data from emails and attachments, reducing AR resolution time by 55%.",
             "Built an invoice-understanding pipeline combining OCR (pdfplumber, pytesseract) + Llama-3 prompting + agent validation, achieving 96% field-level accuracy and generating ERP-ready JSON.",
@@ -110,11 +124,11 @@
         {
           "category": "General",
           "items": [
-            "Led continuous integration efforts, implementing GitHub Actions, Docker, and Kubernetes across GCP, ensuring efficient and reliable software delivery.",
+            "Led continuous integration efforts, implementing GitHub Actions, Docker, and Kubernetes across both GCP, ensuring efficient and reliable software delivery.",
             "Migrated legacy projects to Angular and Node.js, enhancing performance and workflow efficiency by integrating cutting-edge GCP services.",
-            "Deployed and managed Dockerized microservices on GCP, ensuring uniformity between development and production environments.",
+            "Deployed and managed Dockerized microservices on GCP, ensuring uniformity between development and production environments and minimizing deployment risks.",
             "Configured and optimized cloud infrastructure on GCP to bolster application performance and enhance security measures.",
-            "Contributed to the Decarbonization Project by developing and integrating Java Spring Boot solutions across GCP."
+            "Contributed to the Decarbonization Project by developing and integrating Java Spring Boot solutions across GCP, driving project success and sustainability initiatives."
           ]
         }
       ]
@@ -122,18 +136,18 @@
   ],
   "skills": {
     "programming": {
-      "title": "Programming & Scripting",
+      "title": "Programming/Scripting Languages",
       "items": ["Python", "Java", "SQL", "Node.js", "JavaScript", "Angular"]
     },
     "aiml": {
-      "title": "AI/ML Frameworks",
+      "title": "Python Frameworks & AI/ML Tools",
       "categories": [
         {
-          "name": "Gen AI & LLM",
+          "name": "Gen AI & LLM Frameworks",
           "items": ["LangChain", "LlamaIndex", "Transformers", "HuggingFace"]
         },
         {
-          "name": "ML & Deep Learning",
+          "name": "Machine Learning & Deep Learning",
           "items": ["TensorFlow", "PyTorch", "Scikit-Learn"]
         },
         {
@@ -141,37 +155,37 @@
           "items": ["NLTK", "spaCy", "Pandas", "NumPy", "Matplotlib"]
         },
         {
-          "name": "Dev Tools",
-          "items": ["Streamlit", "FastAPI"]
+          "name": "Development Tools",
+          "items": ["Streamlit"]
         }
       ]
     },
     "devops": {
-      "title": "DevOps & Infrastructure",
-      "items": ["Docker", "Kubernetes", "GitHub Actions", "Jenkins", "Terraform"]
+      "title": "DevOps Tools",
+      "items": ["Docker", "Kubernetes", "GitHub", "GitHub Actions", "Jenkins", "Terraform"]
     },
     "cloud": {
       "title": "Cloud Platforms",
       "items": ["Google Cloud (GCP)", "AWS", "Azure AI Search"]
     },
     "tools": {
-      "title": "Tools & IDEs",
+      "title": "IDE & Tools",
       "items": ["Jupyter Notebook", "VS Code", "Postman"]
     },
     "visualization": {
-      "title": "Visualization & Analytics",
+      "title": "Visualization",
       "items": ["Google Data Studio", "Power BI", "Power Apps"]
     }
   },
   "education": [
     {
-      "degree": "MSc Computer Science",
+      "degree": "Master's Degree - MSc Computer Science",
       "institution": "University of East London",
       "startDate": "Feb 2022",
       "endDate": "Feb 2024"
     },
     {
-      "degree": "B.E. Computer Science & Engineering",
+      "degree": "Bachelor's Degree - Computer Science and Engineering",
       "institution": "Gudlavalleru Engineering College",
       "startDate": "Jul 2015",
       "endDate": "Apr 2019"
