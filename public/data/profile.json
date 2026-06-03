@@ -56,6 +56,13 @@
       "tags": ["LiteLLM", "FastAPI", "Circuit Breaker", "Docker", "Python"]
     },
     {
+      "title": "Agentic App Builder",
+      "description": "Multi-agent pipeline that turns a plain-English idea into a fully coded, tested, and live-previewed web application. Orchestrates four specialized LLM agents Planner, Developer, Tester, and Reviewer in a LangGraph state machine that iterates until the generated app passes tests. Supports five runtimes (Python, Node.js, React, Angular, Static) with isolated subprocess sandboxes, dynamic port allocation, live hot-reload, and a reverse-proxy that feeds browser console errors back into the agent loop. Real-time progress streams via Server-Sent Events.",
+      "liveUrl": "https://coder.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/agentic-app-builder/",
+      "tags": ["LangGraph", "LangChain", "FastAPI", "SSE", "Docker", "Python 3.12"]
+    },
+    {
       "title": "GenAI Roadmap",
       "description": "Mobile-first study companion for learning the GenAI roadmap anywhere, with structure and momentum.",
       "liveUrl": "https://roadmap.naveenb.dev/",
