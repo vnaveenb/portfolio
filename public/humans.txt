@@ -1,0 +1,16 @@
+/* TEAM */
+
+Name: Naveen Busiraju
+Full name: Venkata Naveen Busiraju
+Role: Gen AI Consultant at Atos
+Also: Full-Stack Engineer, Cloud Architect (GCP & AWS Certified)
+Site: https://naveenb.dev
+LinkedIn: https://www.linkedin.com/in/naveenbusiraju/
+GitHub: https://github.com/vnaveenb
+Twitter/X: https://x.com/naveenbusiraju1
+Location: London, UK
+
+/* SITE */
+
+Standards: HTML5, CSS3, JavaScript
+Fonts: JetBrains Mono, Inter
