@@ -10,7 +10,15 @@
   "social": {
     "linkedin": "https://www.linkedin.com/in/naveenbusiraju/",
     "twitter": "https://x.com/naveenbusiraju1",
-    "github": ""
+    "github": "https://github.com/vnaveenb"
+  },
+  "hero": {
+    "greeting": "Hi, I'm Naveen.",
+    "headline": ["GenAI Consultant.", "Engineer.", "Builder."],
+    "tagline": "I design and ship production AI systems: RAG pipelines, multi-agent workflows, and document intelligence that solve real business problems.",
+    "specializing": ["LLMs & RAG", "Agentic AI", "Cloud Architecture", "Full-Stack Engineering", "Enterprise Software"],
+    "ctaPrimary": { "label": "View Projects", "href": "#projects" },
+    "ctaSecondary": { "label": "Book a Call", "href": "mailto:naveenbusiraju@gmail.com?subject=Let%27s%20talk" }
   },
   "projects": [
     {

@@ -9,21 +9,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     globalProfileData = profileData;
     
     if (profileData) {
-        renderProfile(profileData);
-        renderHighlights(profileData.about.highlights);
-        renderExperience(profileData.experience);
+        renderHero(profileData.hero);
+        calculateExperience(profileData.experience);
+        renderStats(profileData);
+        renderTrustRow(profileData.skills);
         renderProjects(profileData.projects);
+        renderApps(profileData.projects);
+        renderExperience(profileData.experience);
         renderSkills(profileData.skills);
+        renderOpenSource(profileData.projects);
         renderEducation(profileData.education);
         renderCertifications(profileData.certifications);
-        calculateExperience(profileData.experience);
+        initCopyMarkdown();
     }
 
     // Initialize interactions
+    initThemeToggle();
     initMobileMenu();
     initScrollReveal();
     initSmoothScroll();
-    initCopyMarkdown();
+    const yearEl = document.getElementById('current-year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
 });
 
 // Load profile data from JSON
@@ -74,79 +80,112 @@ function calculateExperience(experienceEntries) {
         if (years > 0) experienceText += ' ';
         experienceText += `${months} Month${months > 1 ? 's' : ''}`;
     }
-    
-    document.getElementById('experience-years').textContent = `"${experienceText}"`;
+
+    const statExp = document.getElementById('stat-experience');
+    if (statExp) statExp.textContent = years >= 1 ? `${years}+ yrs` : `${months} mo`;
 }
 
-// Render profile text
-function renderProfile(data) {
-    const profileText = document.getElementById('profile-text');
-    if (profileText && data.about.profile) {
-        profileText.textContent = data.about.profile;
+// ---- Small HTML helpers (data is trusted local JSON, escaped defensively) ----
+function escapeHtml(str) {
+    return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function escapeAttr(str) { return escapeHtml(str); }
+function truncate(str, n) {
+    const s = String(str || '');
+    return s.length > n ? s.slice(0, n).trimEnd() + '\u2026' : s;
+}
+function shortRepo(url) {
+    try { const u = new URL(url); return 'github.com' + u.pathname.replace(/\/$/, ''); }
+    catch (e) { return url; }
+}
+
+// Render hero copy
+function renderHero(hero) {
+    if (!hero) return;
+    const greeting = document.getElementById('hero-greeting');
+    if (greeting) greeting.textContent = hero.greeting || '';
+
+    const headline = document.getElementById('hero-headline');
+    if (headline && Array.isArray(hero.headline)) {
+        const last = hero.headline.length - 1;
+        headline.innerHTML = hero.headline.map((word, i) =>
+            i === last
+                ? `<span class="accent-word">${escapeHtml(word)}</span>`
+                : `<span class="block sm:inline">${escapeHtml(word)} </span>`
+        ).join('');
+    }
+
+    const tagline = document.getElementById('hero-tagline');
+    if (tagline) tagline.textContent = hero.tagline || '';
+
+    const spec = document.getElementById('hero-specializing');
+    if (spec && Array.isArray(hero.specializing)) {
+        spec.innerHTML = hero.specializing.map(s => `<li class="chip">${escapeHtml(s)}</li>`).join('');
+    }
+
+    const cta = document.getElementById('hero-cta');
+    if (cta) {
+        const primary = hero.ctaPrimary || { label: 'View Projects', href: '#projects' };
+        const secondary = hero.ctaSecondary || { label: 'Book a Call', href: 'mailto:naveenbusiraju@gmail.com' };
+        cta.innerHTML =
+            `<a href="${escapeAttr(primary.href)}" class="btn btn-primary">${escapeHtml(primary.label)}</a>` +
+            `<a href="${escapeAttr(secondary.href)}" class="btn btn-ghost">${escapeHtml(secondary.label)}</a>`;
     }
 }
 
-// Render highlights grid
-function renderHighlights(highlights) {
-    const grid = document.getElementById('highlights-grid');
-    if (!grid || !highlights) return;
-
-    const iconMap = {
-        'robot': `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>`,
-        'code': `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`,
-        'cloud': `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>`
-    };
-
-    const colorClasses = ['text-green-400', 'text-blue-400', 'text-purple-400'];
-
-    grid.innerHTML = highlights.map((highlight, index) => `
-        <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-5 hover:border-neutral-700 transition-all hover:-translate-y-1">
-            <div class="${colorClasses[index % colorClasses.length]} mb-3">
-                ${iconMap[highlight.icon] || iconMap['code']}
-            </div>
-            <h3 class="font-semibold text-white mb-2">${highlight.title}</h3>
-            <p class="text-sm text-gray-400">${highlight.description}</p>
-        </div>
-    `).join('');
+// Render hero stat cards (derived from data)
+function renderStats(data) {
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    const projects = data.projects || [];
+    set('stat-projects', `${projects.length}+`);
+    set('stat-apps', `${projects.filter(p => p.liveUrl).length}`);
+    set('stat-certs', `${(data.certifications || []).length}`);
 }
 
-// Render experience section
+// Render the "building with" trust row from cloud + devops skills
+function renderTrustRow(skills) {
+    const row = document.getElementById('trust-row');
+    if (!row || !skills) return;
+    const cloud = (skills.cloud && skills.cloud.items) || [];
+    const devops = (skills.devops && skills.devops.items) || [];
+    const items = [...cloud, ...devops].slice(0, 8);
+    row.innerHTML = items.map(name => `<li class="font-mono text-sm text-muted">${escapeHtml(name)}</li>`).join('');
+}
+
+// Render experience timeline
 function renderExperience(experience) {
     const container = document.getElementById('experience-list');
     if (!container || !experience) return;
 
     container.innerHTML = experience.map(job => `
-        <div class="bg-neutral-900/50 rounded-xl border border-neutral-800 p-6 hover:border-neutral-700 transition-all">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                <div>
-                    <h3 class="text-xl font-bold text-white">${job.title}</h3>
-                    <p class="text-cyan-400 font-mono">${job.company}</p>
-                    ${job.location ? `<p class="text-gray-500 text-sm flex items-center gap-1 mt-1">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        </svg>
-                        ${job.location}
-                    </p>` : ''}
+        <div class="timeline-item">
+            <div class="surface-card p-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-ink">${escapeHtml(job.title)}</h3>
+                        <p class="text-accent font-mono">${escapeHtml(job.company)}</p>
+                        ${job.location ? `<p class="text-muted text-sm mt-1">${escapeHtml(job.location)}</p>` : ''}
+                    </div>
+                    <span class="text-sm font-mono ${job.isCurrent ? 'text-accent' : 'text-muted'} mt-2 md:mt-0">
+                        ${escapeHtml(job.startDate)} \u2014 ${escapeHtml(job.endDate)}
+                    </span>
                 </div>
-                <span class="text-sm font-mono ${job.isCurrent ? 'text-green-400' : 'text-gray-500'} mt-2 md:mt-0">
-                    ${job.startDate} — ${job.endDate}
-                </span>
+                ${job.responsibilities.map(resp => `
+                    <div class="mt-4">
+                        <h4 class="text-accent2 font-mono text-sm mb-3">// ${escapeHtml(resp.category)}</h4>
+                        <ul class="space-y-2 list-none p-0 m-0">
+                            ${resp.items.map(item => `
+                                <li class="flex items-start gap-3 text-muted text-sm">
+                                    <span class="text-accent mt-1.5 shrink-0" aria-hidden="true">\u25B9</span>
+                                    <span>${escapeHtml(item)}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `).join('')}
             </div>
-            
-            ${job.responsibilities.map(resp => `
-                <div class="mt-4">
-                    <h4 class="text-purple-400 font-mono text-sm mb-3">// ${resp.category}</h4>
-                    <ul class="space-y-2">
-                        ${resp.items.map(item => `
-                            <li class="flex items-start gap-3 text-gray-300 text-sm">
-                                <span class="text-green-400 mt-1.5 flex-shrink-0">▹</span>
-                                <span>${item}</span>
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
-            `).join('')}
         </div>
     `).join('');
 }
@@ -156,33 +195,18 @@ function renderSkills(skills) {
     const container = document.getElementById('skills-grid');
     if (!container || !skills) return;
 
-    const skillStyles = {
-        programming: { color: '#4ade80', bgColor: 'rgba(74, 222, 128, 0.1)', borderColor: 'rgba(74, 222, 128, 0.3)' },
-        aiml: { color: '#a78bfa', bgColor: 'rgba(167, 139, 250, 0.1)', borderColor: 'rgba(167, 139, 250, 0.3)' },
-        devops: { color: '#fbbf24', bgColor: 'rgba(251, 191, 36, 0.1)', borderColor: 'rgba(251, 191, 36, 0.3)' },
-        cloud: { color: '#60a5fa', bgColor: 'rgba(96, 165, 250, 0.1)', borderColor: 'rgba(96, 165, 250, 0.3)' },
-        tools: { color: '#22d3ee', bgColor: 'rgba(34, 211, 238, 0.1)', borderColor: 'rgba(34, 211, 238, 0.3)' },
-        visualization: { color: '#f87171', bgColor: 'rgba(248, 113, 113, 0.1)', borderColor: 'rgba(248, 113, 113, 0.3)' }
-    };
-
     let html = '';
-
-    for (const [key, skill] of Object.entries(skills)) {
-        const style = skillStyles[key] || skillStyles.programming;
-        
+    for (const [, skill] of Object.entries(skills)) {
         if (skill.categories) {
-            // AI/ML with subcategories
             html += `
-                <div class="md:col-span-2 bg-neutral-900/50 rounded-xl border border-neutral-800 p-6 hover:border-neutral-700 transition-all">
-                    <h3 class="font-mono mb-4" style="color: ${style.color}">// ${skill.title}</h3>
+                <div class="md:col-span-2 surface-card p-6">
+                    <h3 class="font-mono text-accent mb-4">// ${escapeHtml(skill.title)}</h3>
                     <div class="grid md:grid-cols-2 gap-4">
                         ${skill.categories.map(cat => `
                             <div>
-                                <p class="text-gray-500 text-sm mb-2">${cat.name}</p>
+                                <p class="text-muted text-sm mb-2">${escapeHtml(cat.name)}</p>
                                 <div class="flex flex-wrap gap-2">
-                                    ${cat.items.map(item => `
-                                        <span class="px-3 py-1 text-sm rounded-full" style="background: ${style.bgColor}; border: 1px solid ${style.borderColor}; color: ${style.color}">${item}</span>
-                                    `).join('')}
+                                    ${cat.items.map(item => `<span class="chip">${escapeHtml(item)}</span>`).join('')}
                                 </div>
                             </div>
                         `).join('')}
@@ -190,14 +214,11 @@ function renderSkills(skills) {
                 </div>
             `;
         } else if (skill.items) {
-            // Simple skill list
             html += `
-                <div class="bg-neutral-900/50 rounded-xl border border-neutral-800 p-6 hover:border-neutral-700 transition-all">
-                    <h3 class="font-mono mb-4" style="color: ${style.color}">// ${skill.title}</h3>
+                <div class="surface-card p-6">
+                    <h3 class="font-mono text-accent mb-4">// ${escapeHtml(skill.title)}</h3>
                     <div class="flex flex-wrap gap-2">
-                        ${skill.items.map(item => `
-                            <span class="px-3 py-1 text-sm rounded-full" style="background: ${style.bgColor}; border: 1px solid ${style.borderColor}; color: ${style.color}">${item}</span>
-                        `).join('')}
+                        ${skill.items.map(item => `<span class="chip">${escapeHtml(item)}</span>`).join('')}
                     </div>
                 </div>
             `;
@@ -213,12 +234,12 @@ function renderEducation(education) {
     if (!container || !education) return;
 
     container.innerHTML = `
-        <h3 class="font-mono text-blue-400 mb-4">// Education</h3>
+        <h3 class="font-mono text-accent mb-4">// Education</h3>
         ${education.map(edu => `
-            <div class="bg-neutral-900/50 rounded-xl border border-neutral-800 p-5 hover:border-neutral-700 transition-all mb-4">
-                <h4 class="font-semibold text-white mb-1">${edu.degree}</h4>
-                <p class="text-cyan-400 text-sm">${edu.institution}</p>
-                <p class="text-gray-500 text-sm font-mono mt-2">${edu.startDate} — ${edu.endDate}</p>
+            <div class="surface-card p-5 mb-4">
+                <h4 class="font-semibold text-ink mb-1">${escapeHtml(edu.degree)}</h4>
+                <p class="text-accent text-sm">${escapeHtml(edu.institution)}</p>
+                <p class="text-muted text-sm font-mono mt-2">${escapeHtml(edu.startDate)} \u2014 ${escapeHtml(edu.endDate)}</p>
             </div>
         `).join('')}
     `;
@@ -230,29 +251,13 @@ function renderCertifications(certifications) {
     if (!container || !certifications) return;
 
     container.innerHTML = `
-        <h3 class="font-mono text-yellow-400 mb-4">// Certifications</h3>
+        <h3 class="font-mono text-accent2 mb-4">// Certifications</h3>
         ${certifications.map(cert => `
-            <div class="bg-neutral-900/50 rounded-xl border border-neutral-800 p-5 hover:border-neutral-700 transition-all mb-4">
-                <div class="flex items-start gap-3">
-                    <div class="text-yellow-400 mt-1">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <h4 class="font-semibold text-white text-sm">${cert.name}</h4>
-                        <p class="text-gray-400 text-sm">${cert.issuer}</p>
-                        <p class="text-gray-500 text-xs font-mono mt-1">Issued: ${cert.issueDate}${cert.expiryDate ? ` • Expires: ${cert.expiryDate}` : ''}</p>
-                        ${cert.credentialUrl ? `
-                            <a href="${cert.credentialUrl}" target="_blank" class="inline-flex items-center gap-1 text-yellow-400 text-sm mt-2 hover:underline">
-                                <span>View Credential</span>
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                </svg>
-                            </a>
-                        ` : ''}
-                    </div>
-                </div>
+            <div class="surface-card p-5 mb-4">
+                <h4 class="font-semibold text-ink text-sm">${escapeHtml(cert.name)}</h4>
+                <p class="text-muted text-sm">${escapeHtml(cert.issuer)}</p>
+                <p class="text-muted text-xs font-mono mt-1">Issued: ${escapeHtml(cert.issueDate)}${cert.expiryDate ? ` \u2022 Expires: ${escapeHtml(cert.expiryDate)}` : ''}</p>
+                ${cert.credentialUrl ? `<a href="${escapeAttr(cert.credentialUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-accent text-sm mt-2 hover:underline">View Credential</a>` : ''}
             </div>
         `).join('')}
     `;
@@ -264,35 +269,55 @@ function renderProjects(projects) {
     if (!container || !projects) return;
 
     container.innerHTML = projects.map(project => `
-        <div class="bg-neutral-900/50 rounded-xl border border-neutral-800 p-6 hover:border-terminal-green/50 transition-all card-hover group">
+        <div class="surface-card p-6 flex flex-col group">
             <div class="flex flex-wrap gap-2 mb-4">
-                ${project.tags.map(tag => `
-                    <span class="px-2.5 py-1 text-xs font-mono bg-terminal-green/10 border border-terminal-green/30 text-terminal-green rounded-md">${tag}</span>
-                `).join('')}
+                ${(project.tags || []).slice(0, 4).map(tag => `<span class="chip">${escapeHtml(tag)}</span>`).join('')}
             </div>
-            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-terminal-green transition-colors">${project.title}</h3>
-            <p class="text-gray-400 text-sm mb-5 leading-relaxed">${project.description}</p>
+            <h3 class="text-xl font-bold text-ink mb-2 group-hover:text-accent transition-colors">${escapeHtml(project.title)}</h3>
+            <p class="text-muted text-sm mb-5 leading-relaxed flex-1">${escapeHtml(truncate(project.description, 160))}</p>
             <div class="flex flex-wrap gap-3">
-                ${project.liveUrl ? `
-                    <a href="${project.liveUrl}" target="_blank" rel="noopener noreferrer"
-                       class="inline-flex items-center gap-2 px-4 py-2 bg-terminal-cyan/10 border border-terminal-cyan/40 text-terminal-cyan rounded-lg hover:bg-terminal-cyan/20 transition-all font-mono text-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                        </svg>
-                        Live Demo
-                    </a>
-                ` : ''}
-                ${project.githubUrl ? `
-                    <a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer"
-                       class="inline-flex items-center gap-2 px-4 py-2 bg-terminal-surface border border-terminal-border text-gray-300 rounded-lg hover:border-gray-500 hover:text-white transition-all font-mono text-sm">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                        GitHub
-                    </a>
-                ` : ''}
+                ${project.liveUrl ? `<a href="${escapeAttr(project.liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary !py-2 !px-4 text-sm">Live Demo</a>` : ''}
+                ${project.githubUrl ? `<a href="${escapeAttr(project.githubUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost !py-2 !px-4 text-sm">GitHub</a>` : ''}
             </div>
         </div>
+    `).join('');
+}
+
+// Render featured apps (projects that have a live URL)
+function renderApps(projects) {
+    const container = document.getElementById('apps-list');
+    if (!container || !projects) return;
+    const apps = projects.filter(p => p.liveUrl);
+    container.innerHTML = apps.map(app => `
+        <div class="surface-card p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-3 gap-3">
+                <h3 class="text-lg font-bold text-ink">${escapeHtml(app.title)}</h3>
+                <span class="chip" style="color:#15803d;background:rgba(34,197,94,0.14);border-color:rgba(34,197,94,0.35)">Live</span>
+            </div>
+            <p class="text-muted text-sm mb-5 leading-relaxed flex-1">${escapeHtml(truncate(app.description, 120))}</p>
+            <div class="flex flex-wrap gap-3">
+                <a href="${escapeAttr(app.liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary !py-2 !px-4 text-sm">Open App</a>
+                ${app.githubUrl ? `<a href="${escapeAttr(app.githubUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost !py-2 !px-4 text-sm">GitHub</a>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Render open-source list (projects that have a GitHub URL)
+function renderOpenSource(projects) {
+    const list = document.getElementById('opensource-list');
+    if (!list || !projects) return;
+    const repos = projects.filter(p => p.githubUrl);
+    list.innerHTML = repos.map(p => `
+        <li class="surface-card p-5">
+            <a href="${escapeAttr(p.githubUrl)}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 text-ink hover:text-accent transition-colors">
+                <svg class="w-5 h-5 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                <span>
+                    <span class="block font-semibold">${escapeHtml(p.title)}</span>
+                    <span class="block text-xs text-muted font-mono mt-1">${escapeHtml(shortRepo(p.githubUrl))}</span>
+                </span>
+            </a>
+        </li>
     `).join('');
 }
 
@@ -300,19 +325,53 @@ function renderProjects(projects) {
 function initMobileMenu() {
     const btn = document.getElementById('mobile-menu-btn');
     const menu = document.getElementById('mobile-menu');
-    
-    if (btn && menu) {
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
+    if (!btn || !menu) return;
+
+    btn.addEventListener('click', () => {
+        const isHidden = menu.classList.toggle('hidden');
+        btn.setAttribute('aria-expanded', String(!isHidden));
+        btn.setAttribute('aria-label', isHidden ? 'Open menu' : 'Close menu');
+    });
+
+    // Close menu when clicking a link
+    menu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            menu.classList.add('hidden');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('aria-label', 'Open menu');
         });
-        
-        // Close menu when clicking a link
-        menu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.add('hidden');
-            });
+    });
+}
+
+// Light / dark theme toggle
+function initThemeToggle() {
+    const root = document.documentElement;
+    const toggles = [
+        document.getElementById('theme-toggle'),
+        document.getElementById('theme-toggle-mobile')
+    ].filter(Boolean);
+    const moon = document.getElementById('icon-moon');
+    const sun = document.getElementById('icon-sun');
+
+    function apply(theme) {
+        const isLight = theme === 'light';
+        root.classList.toggle('light', isLight);
+        if (moon) moon.classList.toggle('hidden', isLight);
+        if (sun) sun.classList.toggle('hidden', !isLight);
+        toggles.forEach(t => {
+            t.setAttribute('aria-pressed', String(isLight));
+            t.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
         });
+        window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
     }
+
+    apply(root.classList.contains('light') ? 'light' : 'dark');
+
+    toggles.forEach(t => t.addEventListener('click', () => {
+        const next = root.classList.contains('light') ? 'dark' : 'light';
+        try { localStorage.setItem('theme', next); } catch (e) { /* ignore */ }
+        apply(next);
+    }));
 }
 
 // Scroll reveal animation
@@ -362,23 +421,13 @@ function initCopyMarkdown() {
         if (btn && text && globalProfileData) {
             btn.addEventListener('click', async () => {
                 const markdown = generateMarkdown(globalProfileData);
-                
                 try {
                     await navigator.clipboard.writeText(markdown);
-                    text.textContent = '✓ copied!';
-                    btn.classList.remove('border-terminal-purple/50', 'text-terminal-purple');
-                    btn.classList.add('border-green-400', 'text-green-400');
-                    
-                    setTimeout(() => {
-                        text.textContent = '.copyMD()';
-                        btn.classList.remove('border-green-400', 'text-green-400');
-                        btn.classList.add('border-terminal-purple/50', 'text-terminal-purple');
-                    }, 2000);
+                    text.textContent = '\u2713 Copied!';
+                    setTimeout(() => { text.textContent = 'Resume'; }, 2000);
                 } catch (err) {
-                    text.textContent = '✗ failed';
-                    setTimeout(() => {
-                        text.textContent = '.copyMD()';
-                    }, 2000);
+                    text.textContent = '\u2717 Failed';
+                    setTimeout(() => { text.textContent = 'Resume'; }, 2000);
                 }
             });
         }

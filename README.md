@@ -14,13 +14,16 @@ Open [http://localhost:3000](http://localhost:3000)
 ## Tech Stack
 
 - **Frontend**: HTML, Tailwind CSS, JavaScript
+- **3D / animation**: Three.js (self-hosted ES module)
 - **Backend**: Node.js + Express
 - **Data**: JSON-based profile configuration
 
 ## Features
 
-- Terminal-styled minimalist design
-- Dynamic content loaded from `data/profile.json`
-- Copy as Markdown functionality
-- Responsive layout
+- Modern, data-driven design rendered from `data/profile.json`
+- Three.js hero: animated particle-network background, mouse-reactive 3D object, and scroll-reactive parallax
+- Light / dark theme toggle (persisted, respects `prefers-color-scheme`)
+- Copy as Markdown resume functionality
+- Responsive layout with accessible keyboard navigation
+- Respects `prefers-reduced-motion` (animations disabled, static fallback)
 - Smooth scroll animations
