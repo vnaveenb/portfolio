@@ -587,7 +587,10 @@ export function createStage({ profile, canvas, labelHost }) {
         antialias: true,
         powerPreference: 'high-performance',
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    // The schematics sit at 62% opacity behind type; there is nothing to gain
+    // from rendering them at 4x the pixels on a HiDPI screen, and plenty of
+    // frame budget to lose.
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight, false);
 
     const scene = new THREE.Scene();

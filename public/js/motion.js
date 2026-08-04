@@ -123,13 +123,19 @@ export async function start(profile) {
     // Recompute on every refresh: font loading and resizing both move the target.
     ScrollTrigger.addEventListener('refreshInit', () => { dock = null; });
 
+    /* Resolved once. Passing a selector string to gsap.set runs
+     * querySelectorAll on every call — and this runs on every scroll frame. */
+    const heroBits = gsap.utils.toArray('.hero__meta, .hero__lede, .hero__actions, .cue');
+
     ScrollTrigger.create({
         trigger: '.hero',
         start: 'top top',
         end: () => `+=${window.innerHeight}`,
         pin: true,
         pinSpacing: true,
-        scrub: true,
+        // A little smoothing: the dock is a big transform, and linking it
+        // rigidly to raw wheel deltas makes it feel stepped.
+        scrub: 0.5,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
             if (!dock) dock = measureDock();
@@ -143,7 +149,7 @@ export async function start(profile) {
                 opacity: 1 - handover,
             });
             // Everything else in the hero clears out of the way first.
-            gsap.set('.hero__meta, .hero__lede, .hero__actions, .cue', {
+            gsap.set(heroBits, {
                 opacity: 1 - ramp(p, 0, 0.4),
                 y: -ramp(p, 0, 0.6) * 40,
             });
@@ -202,7 +208,7 @@ export async function start(profile) {
                 end: () => `+=${window.innerHeight * hold}`,
                 pin: true,
                 pinSpacing: true,
-                scrub: true,
+                scrub: 0.6,
                 invalidateOnRefresh: true,
                 onToggle: (self) => {
                     if (!self.isActive) return;
@@ -215,8 +221,11 @@ export async function start(profile) {
             },
         });
 
-        tl.to(titleWords, { yPercent: 0, duration: 1, stagger: 0.14 }, 0)
-            .to(supporting, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.1 }, 0.45)
+        // Reveal fast, then hold. The title should be fully readable within the
+        // first fifth of the pin — the rest of the scroll is for looking at it,
+        // not for waiting on it.
+        tl.to(titleWords, { yPercent: 0, duration: 0.8, stagger: 0.1 }, 0)
+            .to(supporting, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08 }, 0.35)
             .to(section.querySelector('.scene__inner'), {
                 autoAlpha: 0, y: -34, duration: 0.9, ease: 'power2.in',
             }, 4.3)

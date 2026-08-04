@@ -57,12 +57,25 @@ body {
     line-height: 1.6;
     color: var(--txt);
     background-color: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* The ambient ground glow.
+ *
+ * This used to be `background-attachment: fixed` on the body, which is one of
+ * the reliable ways to make a page scroll badly: the browser cannot scroll the
+ * layer, so it repaints the whole viewport every frame. As its own fixed,
+ * composited element it costs nothing per frame. */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
     background-image:
         radial-gradient(64rem 44rem at 82% -12%, rgba(125, 211, 252, 0.075), transparent 62%),
         radial-gradient(52rem 42rem at -6% 46%, rgba(125, 211, 252, 0.045), transparent 62%);
-    background-attachment: fixed;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
 }
 
 img { max-width: 100%; height: auto; display: block; }
@@ -113,15 +126,21 @@ a { color: inherit; }
 /* Inert by default: the words simply sit there and read normally. The type
  * layer arms them, and boot.js pre-arms them in <head> so nothing flashes in
  * before it can animate. */
+/* The clip window has to be TALLER than the line box, not equal to it.
+ *
+ * These headlines run at line-height 0.82–0.88 to set tight, but a glyph's
+ * ink is roughly 1em top to bottom — so a clip window sized to the line box
+ * slices the caps and the descenders off permanently, animation or no
+ * animation. The padding opens the window above and below; the equal negative
+ * margin means the layout does not move an inch. */
 .mask {
     display: inline-block;
     overflow: hidden;
     vertical-align: bottom;
-    /* Descenders would otherwise be clipped by the overflow. */
-    padding-bottom: 0.12em;
-    margin-bottom: -0.12em;
+    padding: 0.22em 0 0.3em;
+    margin: -0.22em 0 -0.3em;
 }
-.mask__in { display: inline-block; will-change: transform; }
+.mask__in { display: inline-block; }
 
 html.fx-pending .mask__in,
 html.fx .mask__in { transform: translateY(110%); }
@@ -314,16 +333,9 @@ html.fx .hero {
     text-transform: uppercase;
     color: var(--muted);
 }
-.hero__meta .mask + .mask { position: relative; }
-.hero__meta .mask + .mask::before {
-    content: '';
-    position: absolute;
-    left: -0.75rem; top: 50%;
-    width: 3px; height: 3px;
-    border-radius: 50%;
-    background: currentColor;
-    opacity: 0.5;
-}
+/* No separator dots between these. A dot drawn on the .mask sits outside its
+ * own clip window, so overflow:hidden eats it — the rule that used to be here
+ * never rendered anything. The tracking and the gap already separate them. */
 
 /* The single biggest thing on the page. transform-origin is top-left because
  * this element flies into the header slot on scroll. */
@@ -448,7 +460,7 @@ html.fx .rail { display: block; }
  * like, and this has to read as designed even with no JavaScript at all. */
 .scenes {
     max-width: var(--wrap);
-    margin: clamp(3rem, 8vh, 6rem) auto clamp(4rem, 10vh, 7rem);
+    margin: clamp(1.5rem, 4vh, 3rem) auto clamp(4rem, 10vh, 7rem);
     padding-inline: var(--gutter);
 }
 
