@@ -1,0 +1,203 @@
+{
+  "personal": {
+    "name": "Venkata Naveen Busiraju",
+    "shortName": "Naveen Busiraju",
+    "title": "Gen AI Consultant",
+    "company": "Atos",
+    "email": "naveenbusiraju@gmail.com",
+    "phone": "+91 9493534035",
+    "careerStartDate": "2019-11-01",
+    "location": "London, UK · Chennai, IN",
+    "availability": "Open to Gen AI consulting — London / Chennai",
+    "intro": "I build LLM systems and the plumbing that keeps them standing: retrieval over messy documents, multi-agent workflows, and the routers, queues and budgets underneath. Everything below is running somewhere."
+  },
+  "social": {
+    "linkedin": "https://www.linkedin.com/in/naveenbusiraju/",
+    "twitter": "https://x.com/naveenbusiraju1",
+    "github": "https://github.com/vnaveenb"
+  },
+  "projects": [
+    {
+      "id": "agentic-app-builder",
+      "title": "Agentic App Builder",
+      "kicker": "Idea in, running app out",
+      "description": "Describe an app in a sentence and four LLM agents — planner, developer, tester, reviewer — pass it around a LangGraph state machine until the code passes its own tests. The result boots in a sandboxed subprocess behind a reverse proxy that feeds browser console errors back into the loop. Five runtimes: Python, Node, React, Angular, static.",
+      "liveUrl": "https://coder.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/agentic-app-builder/",
+      "tags": ["LangGraph", "LangChain", "FastAPI", "SSE", "Docker", "Python 3.12"],
+      "scene": { "tier": 1, "kind": "builder" }
+    },
+    {
+      "id": "llm-model-fallback-router",
+      "title": "Model Fallback Router",
+      "kicker": "When the model you wanted is down",
+      "description": "Sits in front of your LLM providers. When one starts failing or breaches its latency SLA, a circuit breaker trips and traffic moves to the next model in the chain. The dashboard shows which model actually served each request.",
+      "liveUrl": "https://llm-router.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/llm-model-fallback-router",
+      "tags": ["LiteLLM", "FastAPI", "Circuit Breaker", "Docker", "Python"],
+      "scene": { "tier": 1, "kind": "router" }
+    },
+    {
+      "id": "async-llm-inference-queue",
+      "title": "Async Inference Queue",
+      "kicker": "Backpressure before the meltdown",
+      "description": "A Redis-backed priority queue for LLM jobs. Workers pull by priority, backpressure kicks in before the queue runs away, and anything that exhausts its retries lands in a dead-letter queue you can actually inspect.",
+      "liveUrl": "https://llmqueue.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/async-llm-inference-queue",
+      "tags": ["Redis", "FastAPI", "LiteLLM", "Docker", "Python"],
+      "scene": { "tier": 1, "kind": "queue" }
+    },
+    {
+      "id": "token-cost-budget-dashboard",
+      "title": "Token Cost Budget Dashboard",
+      "kicker": "Every call priced and attributed",
+      "description": "Prices each LLM call and attributes it to a team and a project. When a budget is spent the next request is refused rather than quietly billed. Works with any provider LiteLLM speaks to. 40 tests.",
+      "liveUrl": "https://cost.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/token-cost-budget-dashboard",
+      "tags": ["LiteLLM", "FastAPI", "SQLite", "Budget Enforcement", "Python"],
+      "scene": {
+        "tier": 2,
+        "shape": "ledger",
+        "nodes": ["call", "price", "attribute", "budget", "refuse"],
+        "edges": [[0, 1], [1, 2], [2, 3], [3, 4], [3, 0]]
+      }
+    },
+    {
+      "id": "rag-eval-suite",
+      "title": "RAG Eval Suite",
+      "kicker": "Did that retrieval change help?",
+      "description": "Scores a RAG pipeline on faithfulness, answer relevancy, context precision and recall with RAGAS, so a retrieval tweak stops being a matter of opinion. Local sentence-transformers embeddings, ChromaDB behind it, FastAPI in front.",
+      "liveUrl": null,
+      "githubUrl": "https://github.com/vnaveenb/rag-eval-suite",
+      "tags": ["RAG", "RAGAS", "ChromaDB", "LiteLLM", "FastAPI"],
+      "scene": {
+        "tier": 2,
+        "shape": "fan",
+        "nodes": ["query", "retrieve", "answer", "faithful", "relevant", "precision", "recall"],
+        "edges": [[0, 1], [1, 2], [2, 3], [2, 4], [2, 5], [2, 6]]
+      }
+    },
+    {
+      "id": "agent-tool-calls-retries",
+      "title": "Agent Tool Calls & Retries",
+      "kicker": "A ReAct loop that survives a flaky tool",
+      "description": "A ReAct loop built on native function calling, with exponential backoff when a tool fails and a JSON trace of every step the agent took. Swap the model without touching the agent. Ships LangGraph, CrewAI and Google A2A adapters. 31 tests.",
+      "liveUrl": "https://agent.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/agent-tool-calls-retries",
+      "tags": ["ReAct Agent", "LiteLLM", "LangGraph", "CrewAI", "FastAPI"],
+      "scene": {
+        "tier": 2,
+        "shape": "loop",
+        "nodes": ["prompt", "think", "tool", "observe", "retry", "answer"],
+        "edges": [[0, 1], [1, 2], [2, 3], [3, 1], [2, 4], [4, 2], [1, 5]]
+      }
+    },
+    {
+      "id": "carbon-calculator",
+      "title": "Carbon Calculator Platform",
+      "kicker": "Lifecycle carbon for a laptop fleet",
+      "description": "Works out the lifecycle carbon of a laptop fleet: ingests vendor spec data, applies country-level grid emission factors, and gives people comparison dashboards, with admin controls behind role-based access.",
+      "liveUrl": "https://carbon.naveenb.dev/",
+      "githubUrl": "https://github.com/vnaveenb/carbon-calculator",
+      "tags": ["Node.js", "Express", "MySQL", "Docker", "GitHub Actions"],
+      "scene": {
+        "tier": 2,
+        "shape": "stack",
+        "nodes": ["vendor data", "emission factors", "lifecycle model", "dashboards", "admin"],
+        "edges": [[0, 2], [1, 2], [2, 3], [2, 4]]
+      }
+    },
+    {
+      "id": "genai-roadmap",
+      "title": "GenAI Roadmap",
+      "kicker": "The roadmap, on a phone",
+      "description": "A mobile-first study companion for working through the GenAI roadmap — structure and progress tracking on the device you actually have on you.",
+      "liveUrl": "https://roadmap.naveenb.dev/",
+      "githubUrl": null,
+      "tags": ["GenAI", "Mobile-first", "Education"],
+      "scene": {
+        "tier": 2,
+        "shape": "path",
+        "nodes": ["basics", "embeddings", "RAG", "agents", "eval", "ship"],
+        "edges": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]
+      }
+    }
+  ],
+  "about": {
+    "profile": "Gen AI Consultant at Atos, five years in. I moved from cloud and full-stack delivery into building generative AI for enterprises, which in practice means the unphotogenic half: long-context retrieval over real documents that were never meant to be parsed, multi-agent workflows with schema enforcement and fault tolerance, and OCR-plus-LLM pipelines accurate enough to write into an ERP. I still build the stack around it — Java, Spring Boot, Node.js, Angular, Python — and ship it on GCP and AWS with Docker, Kubernetes and GitHub Actions."
+  },
+  "outcomes": [
+    { "value": "65%", "label": "less review time", "note": "long-context RAG over course material, checked against a data-quality checklist" },
+    { "value": "55%", "label": "faster AR resolution", "note": "email agent that classifies, extracts and validates invoice data" },
+    { "value": "96%", "label": "field-level accuracy", "note": "OCR into Llama-3 into agent validation, ERP-ready JSON out" }
+  ],
+  "experience": [
+    {
+      "title": "Gen AI Consultant",
+      "company": "Atos",
+      "location": "London, UK",
+      "startDate": "Dec 2023",
+      "endDate": "Present",
+      "isCurrent": true,
+      "points": [
+        "Built a long-context RAG system over course material — PDF, DOCX, PPTX, XLSX — that checks it against a data-quality checklist and files the compliance report to SharePoint. Review time down 65%.",
+        "Shipped an accounts-receivable email agent that classifies mail, pulls invoice data out of the attachments and validates it before anyone sees it. Resolution time down 55%.",
+        "Built the pipeline underneath: OCR with pdfplumber and pytesseract, Llama-3 prompting, then an agent validation pass. 96% field-level accuracy, ERP-ready JSON out.",
+        "Orchestrated it on LangGraph and MCP with separate retrieval, validation, synthesis and orchestration agents, schema enforcement and fault tolerance throughout.",
+        "Ran the delivery side too: Docker, Kubernetes and GitHub Actions onto GCP and AWS, plus Angular and Node.js migrations off the legacy architecture."
+      ]
+    },
+    {
+      "title": "Associate Consultant",
+      "company": "Atos",
+      "location": "Chennai, IN / Remote",
+      "startDate": "Nov 2019",
+      "endDate": "Jan 2022",
+      "isCurrent": false,
+      "points": [
+        "Ran continuous integration on GCP with GitHub Actions, Docker and Kubernetes.",
+        "Moved legacy projects onto Angular and Node.js, and Dockerised microservices so development and production stopped disagreeing.",
+        "Wrote Java Spring Boot services on GCP for the decarbonisation project."
+      ]
+    }
+  ],
+  "skills": [
+    { "name": "Languages", "items": ["Python", "Java", "Node.js", "JavaScript", "Angular", "SQL"] },
+    { "name": "Gen AI", "items": ["LangChain", "LangGraph", "LlamaIndex", "Transformers", "HuggingFace", "RAGAS", "LiteLLM", "Azure OpenAI"] },
+    { "name": "ML", "items": ["PyTorch", "TensorFlow", "Scikit-Learn", "spaCy", "NLTK", "Pandas", "NumPy"] },
+    { "name": "Platform", "items": ["Docker", "Kubernetes", "Terraform", "GitHub Actions", "Jenkins", "Redis", "ChromaDB"] },
+    { "name": "Cloud", "items": ["Google Cloud", "AWS", "Azure AI Search"] }
+  ],
+  "education": [
+    {
+      "degree": "MSc Computer Science",
+      "institution": "University of East London",
+      "startDate": "Feb 2022",
+      "endDate": "Feb 2024"
+    },
+    {
+      "degree": "BTech Computer Science and Engineering",
+      "institution": "Gudlavalleru Engineering College",
+      "startDate": "Jul 2015",
+      "endDate": "Apr 2019"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "AWS Certified DevOps Engineer – Professional",
+      "issuer": "Amazon Web Services",
+      "issueDate": "Feb 2025",
+      "expiryDate": "Feb 2028",
+      "credentialUrl": "https://www.credly.com/badges/9bae1e0a-7456-4fd9-b27e-8df2279c40aa"
+    },
+    {
+      "name": "Google Cloud Certified Associate Cloud Engineer",
+      "issuer": "Google Cloud",
+      "credentialId": "ZVW1QW",
+      "issueDate": "2021",
+      "expiryDate": null,
+      "credentialUrl": null
+    }
+  ],
+  "interests": ["Coding", "Sci-fi", "Cooking"]
+}

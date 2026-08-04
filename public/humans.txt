@@ -8,9 +8,10 @@ Site: https://naveenb.dev
 LinkedIn: https://www.linkedin.com/in/naveenbusiraju/
 GitHub: https://github.com/vnaveenb
 Twitter/X: https://x.com/naveenbusiraju1
-Location: London, UK
+Location: London, UK / Chennai, IN
 
 /* SITE */
 
 Standards: HTML5, CSS3, JavaScript
 Fonts: JetBrains Mono, Inter
+Motion: Three.js, GSAP ScrollTrigger, Lenis — self-hosted, opt-out in the header
