@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Naveen Busiraju — Gen AI Consultant</title>
-    <meta name="description" content="Naveen Busiraju is a Gen AI Consultant at Atos, building production LLM systems — RAG pipelines, multi-agent workflows, and document-AI. Full-stack engineer and cloud architect (GCP & AWS certified).">
+    <meta name="description" content="Naveen Busiraju is a Gen AI Consultant at Atos, building production LLM systems — RAG pipelines, multi-agent workflows, and document-AI. Full-stack engineer and cloud architect (GCP &amp; AWS certified).">
     <meta name="author" content="Naveen Busiraju">
+    <meta name="theme-color" content="#0b0c0e" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)">
     <link rel="canonical" href="https://naveenb.dev/">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
     <!-- Open Graph -->
     <meta property="og:type" content="profile">
     <meta property="og:title" content="Naveen Busiraju — Gen AI Consultant">
-    <meta property="og:description" content="Naveen Busiraju is a Gen AI Consultant at Atos, building production LLM systems — RAG pipelines, multi-agent workflows, and document-AI.">
+    <meta property="og:description" content="Gen AI Consultant at Atos. RAG pipelines, multi-agent workflows, and document-AI running in production.">
     <meta property="og:url" content="https://naveenb.dev/">
     <meta property="og:image" content="https://naveenb.dev/naveen-busiraju.jpg">
     <meta property="profile:first_name" content="Naveen">
@@ -22,7 +24,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@naveenbusiraju1">
     <meta name="twitter:title" content="Naveen Busiraju — Gen AI Consultant">
-    <meta name="twitter:description" content="Naveen Busiraju is a Gen AI Consultant at Atos, building production LLM systems — RAG pipelines, multi-agent workflows, and document-AI.">
+    <meta name="twitter:description" content="Gen AI Consultant at Atos. RAG pipelines, multi-agent workflows, and document-AI running in production.">
     <meta name="twitter:image" content="https://naveenb.dev/naveen-busiraju.jpg">
 
     <!-- Person JSON-LD for Knowledge Panel / entity understanding -->
@@ -35,14 +37,8 @@
       "url": "https://naveenb.dev",
       "image": "https://naveenb.dev/naveen-busiraju.jpg",
       "jobTitle": "Gen AI Consultant",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "Atos"
-      },
-      "alumniOf": {
-        "@type": "CollegeOrUniversity",
-        "name": "University of East London"
-      },
+      "worksFor": { "@type": "Organization", "name": "Atos" },
+      "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of East London" },
       "knowsAbout": [
         "Generative AI",
         "Large Language Models",
@@ -58,499 +54,302 @@
       ]
     }
     </script>
-    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Set the theme before first paint so there is no flash of the wrong theme.
+         Also marks the document as script-enabled, which is what unlocks the
+         scroll-reveal animation. -->
+    <script>
+        (function () {
+            document.documentElement.classList.add('js');
+            try {
+                var saved = localStorage.getItem('theme');
+                var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+                if (saved === 'light' || (!saved && prefersLight)) {
+                    document.documentElement.classList.add('light');
+                }
+            } catch (e) { /* private mode — fall back to dark */ }
+        })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        mono: ['JetBrains Mono', 'monospace'],
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        bg: 'var(--bg)',
-                        surface: 'var(--surface)',
-                        elevated: 'var(--elevated)',
-                        bd: 'var(--border)',
-                        ink: 'var(--text)',
-                        muted: 'var(--muted)',
-                        accent: 'var(--accent)',
-                        accent2: 'var(--accent-2)',
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.6s ease-out forwards',
-                        'blink': 'blink 1s step-end infinite',
-                        'float': 'float 6s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        blink: {
-                            '0%, 100%': { opacity: '1' },
-                            '50%': { opacity: '0' },
-                        },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-8px)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* ---- Theme tokens (dark default) ---- */
-        :root {
-            --bg: #0a0a0f;
-            --surface: #14141b;
-            --elevated: #1c1c26;
-            --border: #2a2a35;
-            --text: #e8e8ee;
-            --muted: #9aa0ac;
-            --accent: #60a5fa;
-            --accent-2: #a78bfa;
-            --accent-rgb: 96, 165, 250;
-            --accent2-rgb: 167, 139, 250;
-            --grid: rgba(255, 255, 255, 0.04);
-            --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
-        }
-        html.light {
-            --bg: #f4f2ec;
-            --surface: #ffffff;
-            --elevated: #ffffff;
-            --border: #e4e0d7;
-            --text: #16161a;
-            --muted: #5c6169;
-            --accent: #2563eb;
-            --accent-2: #7c3aed;
-            --accent-rgb: 37, 99, 235;
-            --accent2-rgb: 124, 58, 237;
-            --grid: rgba(0, 0, 0, 0.05);
-            --card-shadow: 0 18px 38px rgba(30, 30, 60, 0.12);
-        }
-        html { color-scheme: dark; }
-        html.light { color-scheme: light; }
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            transition: background-color 0.4s ease, color 0.4s ease;
-        }
-        /* Subtle dot-grid background */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background-image: radial-gradient(circle, var(--grid) 1px, transparent 1px);
-            background-size: 32px 32px;
-            pointer-events: none;
-        }
-        .surface-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 1rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-        .surface-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--card-shadow);
-            border-color: rgba(var(--accent-rgb), 0.4);
-        }
-        .chip {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.7rem;
-            font-size: 0.75rem;
-            border-radius: 9999px;
-            background: rgba(var(--accent-rgb), 0.1);
-            border: 1px solid rgba(var(--accent-rgb), 0.28);
-            color: var(--accent);
-            white-space: nowrap;
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.7rem 1.3rem;
-            border-radius: 0.7rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-            min-height: 44px;
-        }
-        .btn:hover { transform: translateY(-2px); }
-        .btn-primary { background: var(--accent); color: #fff; }
-        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
-        .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-        .accent-word {
-            background: linear-gradient(120deg, var(--accent), var(--accent-2));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .section-line {
-            background: linear-gradient(90deg, var(--accent) 0%, var(--border) 100%);
-            height: 1px;
-        }
-        /* Hero canvases */
-        #hero-canvas, #hero-object-canvas {
-            display: block;
-        }
-        #hero-canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-        /* Floating stat cards */
-        .stat-card {
-            background: var(--elevated);
-            border: 1px solid var(--border);
-            border-radius: 0.9rem;
-            padding: 0.75rem 1rem;
-            box-shadow: var(--card-shadow);
-        }
-        #navbar {
-            background: color-mix(in srgb, var(--bg) 80%, transparent);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-link { color: var(--muted); transition: color 0.2s ease; }
-        .nav-link:hover { color: var(--accent); }
-        /* Timeline */
-        .timeline-item { position: relative; padding-left: 1.75rem; }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 0.4rem;
-            width: 0.7rem; height: 0.7rem;
-            border-radius: 9999px;
-            background: var(--accent);
-            box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.15);
-        }
-        .timeline-item::after {
-            content: '';
-            position: absolute;
-            left: 0.3rem; top: 1.2rem; bottom: -1rem;
-            width: 1px;
-            background: var(--border);
-        }
-        .timeline-item:last-child::after { display: none; }
-        .scroll-reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .scroll-reveal.revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        :focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
-            .scroll-reveal { opacity: 1; transform: none; }
-        }
-    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="/css/site.css">
 </head>
-<body class="font-sans antialiased">
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-surface focus:text-ink focus:border focus:border-bd">
-        Skip to main content
-    </a>
+<body>
+    <a href="#main" class="skip-link">Skip to main content</a>
 
-    <!-- Navigation -->
-    <nav id="navbar" aria-label="Main" class="fixed top-0 w-full z-50 backdrop-blur-md transition-all duration-300">
-        <div class="max-w-6xl mx-auto px-6 py-4">
-            <div class="flex items-center justify-between gap-4">
-                <a href="#home" class="font-mono text-accent font-semibold text-lg">
-                    ~/naveen<span class="animate-blink">_</span>
+    <header class="header" id="header">
+        <div class="shell">
+            <div class="header__bar">
+                <a href="/" class="brand" aria-label="Naveen Busiraju — home">
+                    <span class="brand__dot" aria-hidden="true"></span>
+                    <span>Naveen Busiraju</span>
+                    <span class="brand__role">Gen AI</span>
                 </a>
-                <div class="hidden md:flex items-center gap-7">
-                    <a href="#experience" class="nav-link font-mono text-sm">Work</a>
-                    <a href="#projects" class="nav-link font-mono text-sm">Projects</a>
-                    <a href="#apps" class="nav-link font-mono text-sm">Apps</a>
-                    <a href="/about" class="nav-link font-mono text-sm">About</a>
-                    <button id="copy-markdown-btn" class="btn btn-ghost font-mono text-sm !py-1.5 !px-3 !min-h-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                        </svg>
-                        <span id="copy-btn-text">Resume</span>
-                    </button>
-                    <button id="theme-toggle" type="button" class="icon-btn" aria-label="Switch to light theme" aria-pressed="false" title="Toggle theme">
-                        <svg id="icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                        </svg>
-                        <svg id="icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-                        </svg>
-                    </button>
+
+                <div class="header__desktop">
+                    <nav class="nav" aria-label="Sections">
+                        <a class="nav__link" href="#work">Work</a>
+                        <a class="nav__link" href="#experience">Experience</a>
+                        <a class="nav__link" href="#skills">Skills</a>
+                        <a class="nav__link" href="#contact">Contact</a>
+                    </nav>
+                    <div class="header__actions">
+                        <button type="button" class="btn btn--outline btn--sm" id="copy-resume" data-copy-resume>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            <span data-copy-label>Copy résumé</span>
+                        </button>
+                        <button type="button" class="icon-btn" data-theme-toggle aria-label="Switch to light theme" aria-pressed="false" title="Toggle theme">
+                            <svg data-icon-dark viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                            </svg>
+                            <svg data-icon-light viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" hidden>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <button id="mobile-menu-btn" class="md:hidden icon-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+
+                <button type="button" class="icon-btn nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/>
                     </svg>
                 </button>
             </div>
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t border-bd pt-4">
-                <div class="flex flex-col gap-4">
-                    <a href="#experience" class="nav-link font-mono text-sm">Work</a>
-                    <a href="#projects" class="nav-link font-mono text-sm">Projects</a>
-                    <a href="#apps" class="nav-link font-mono text-sm">Apps</a>
-                    <a href="/about" class="nav-link font-mono text-sm">About</a>
-                    <div class="flex items-center gap-3 pt-1">
-                        <button id="copy-markdown-btn-mobile" class="btn btn-ghost font-mono text-sm !py-1.5 !px-3 !min-h-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                            <span id="copy-btn-text-mobile">Resume</span>
-                        </button>
-                        <button id="theme-toggle-mobile" type="button" class="icon-btn" aria-label="Switch to light theme" aria-pressed="false">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                            </svg>
-                        </button>
-                    </div>
+
+            <div class="drawer" id="drawer">
+                <nav class="drawer__links" aria-label="Sections">
+                    <a href="#work">Work</a>
+                    <a href="#experience">Experience</a>
+                    <a href="#skills">Skills</a>
+                    <a href="#credentials">Credentials</a>
+                    <a href="#contact">Contact</a>
+                    <a href="/about">About</a>
+                </nav>
+                <div class="drawer__actions">
+                    <button type="button" class="btn btn--outline btn--sm" data-copy-resume>
+                        <span data-copy-label>Copy résumé</span>
+                    </button>
+                    <button type="button" class="icon-btn" data-theme-toggle aria-label="Switch to light theme" aria-pressed="false">
+                        <svg data-icon-dark viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                        <svg data-icon-light viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" hidden>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <main id="main-content" tabindex="-1">
-    <!-- Hero Section -->
-    <section id="home" class="relative min-h-screen flex items-center px-6 pt-28 pb-16 overflow-hidden">
-        <canvas id="hero-canvas" aria-hidden="true"></canvas>
-        <div class="relative z-10 max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-12 items-center">
-            <!-- Left: copy -->
-            <div>
-                <p id="hero-greeting" class="font-mono text-muted mb-4"></p>
-                <h1 id="hero-headline" class="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight mb-6"></h1>
-                <p id="hero-tagline" class="text-lg text-muted max-w-xl leading-relaxed mb-8"></p>
+    <main id="main" tabindex="-1">
+        <!-- ============================ Hero ============================ -->
+        <section class="hero">
+            <div class="hero__backdrop" aria-hidden="true"></div>
+            <div class="hero__grid" aria-hidden="true"></div>
+            <div class="shell">
+                <div class="hero__inner">
+                    <div>
+                        <p class="hero__status"><i aria-hidden="true"></i> Open to Gen AI consulting work</p>
 
-                <div class="mb-8">
-                    <p class="font-mono text-sm text-muted mb-3">Specializing in</p>
-                    <ul id="hero-specializing" class="flex flex-wrap gap-2 list-none p-0 m-0"></ul>
-                </div>
+                        <h1 class="hero__title">
+                            I build GenAI systems that<br>
+                            <em>survive production.</em>
+                        </h1>
 
-                <div id="hero-cta" class="flex flex-wrap gap-4"></div>
-            </div>
+                        <p class="hero__lede">
+                            Gen AI Consultant at Atos. I design RAG pipelines, multi-agent
+                            workflows and document-AI for enterprises — then deal with the
+                            messy documents, latency budgets and compliance reviews that
+                            come after the demo.
+                        </p>
 
-            <!-- Right: portrait + floating stats + 3D object -->
-            <div class="relative flex justify-center lg:justify-end">
-                <div class="relative">
-                    <canvas id="hero-object-canvas" width="360" height="360" class="absolute -inset-6 w-[calc(100%+3rem)] h-[calc(100%+3rem)] -z-0 opacity-80 pointer-events-none" aria-hidden="true"></canvas>
-                    <img src="/naveen-busiraju.jpg"
-                         alt="Portrait of Naveen Busiraju, Gen AI Consultant"
-                         width="320" height="384"
-                         class="relative z-10 w-72 sm:w-80 h-auto rounded-2xl border border-bd object-cover shadow-2xl">
-                    <div class="stat-card absolute -top-4 -right-4 z-20 animate-float" style="animation-delay: 0s;">
-                        <p class="text-2xl font-bold text-ink" id="stat-experience">&mdash;</p>
-                        <p class="text-xs text-muted font-mono">Experience</p>
-                    </div>
-                    <div class="stat-card absolute top-1/3 -left-6 z-20 animate-float" style="animation-delay: 1.5s;">
-                        <p class="text-2xl font-bold text-ink" id="stat-projects">&mdash;</p>
-                        <p class="text-xs text-muted font-mono">Projects shipped</p>
-                    </div>
-                    <div class="stat-card absolute -bottom-4 right-2 z-20 animate-float" style="animation-delay: 3s;">
-                        <p class="text-2xl font-bold text-ink" id="stat-apps">&mdash;</p>
-                        <p class="text-xs text-muted font-mono">Live apps</p>
-                    </div>
-                    <div class="stat-card absolute bottom-1/4 -left-4 z-20 animate-float hidden sm:block" style="animation-delay: 4.5s;">
-                        <p class="text-2xl font-bold text-ink" id="stat-certs">&mdash;</p>
-                        <p class="text-xs text-muted font-mono">Certifications</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                        <div class="hero__actions">
+                            <a class="btn btn--solid" href="#work">See the work</a>
+                            <a class="btn btn--outline" href="mailto:naveenbusiraju@gmail.com?subject=Let%27s%20talk">Start a conversation</a>
+                        </div>
 
-    <!-- Trust row -->
-    <section aria-label="Tools and platforms" class="px-6 py-8 border-y border-bd">
-        <div class="max-w-6xl mx-auto">
-            <p class="text-center font-mono text-xs text-muted mb-4">Building with</p>
-            <ul id="trust-row" class="flex flex-wrap justify-center items-center gap-x-8 gap-y-3 list-none p-0 m-0"></ul>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="py-24 px-6">
-        <div class="max-w-6xl mx-auto">
-            <div class="scroll-reveal">
-                <div class="flex items-center gap-3 mb-10">
-                    <span class="text-accent font-mono text-sm">01.</span>
-                    <h2 class="text-2xl md:text-3xl font-bold">Projects</h2>
-                    <div class="flex-1 section-line ml-4"></div>
-                </div>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-list"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Apps Section -->
-    <section id="apps" class="py-24 px-6 bg-surface/40">
-        <div class="max-w-6xl mx-auto">
-            <div class="scroll-reveal">
-                <div class="flex items-center gap-3 mb-10">
-                    <span class="text-accent font-mono text-sm">02.</span>
-                    <h2 class="text-2xl md:text-3xl font-bold">Featured Apps</h2>
-                    <div class="flex-1 section-line ml-4"></div>
-                </div>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="apps-list"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Experience Section -->
-    <section id="experience" class="py-24 px-6">
-        <div class="max-w-6xl mx-auto">
-            <div class="scroll-reveal">
-                <div class="flex items-center gap-3 mb-10">
-                    <span class="text-accent font-mono text-sm">03.</span>
-                    <h2 class="text-2xl md:text-3xl font-bold">Experience</h2>
-                    <div class="flex-1 section-line ml-4"></div>
-                </div>
-                <div class="space-y-8" id="experience-list"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="py-24 px-6 bg-surface/40">
-        <div class="max-w-6xl mx-auto">
-            <div class="scroll-reveal">
-                <div class="flex items-center gap-3 mb-10">
-                    <span class="text-accent font-mono text-sm">04.</span>
-                    <h2 class="text-2xl md:text-3xl font-bold">Skills</h2>
-                    <div class="flex-1 section-line ml-4"></div>
-                </div>
-                <div class="grid md:grid-cols-2 gap-6" id="skills-grid"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Open Source Section -->
-    <section id="opensource" class="py-24 px-6">
-        <div class="max-w-6xl mx-auto">
-            <div class="scroll-reveal">
-                <div class="flex items-center gap-3 mb-10">
-                    <span class="text-accent font-mono text-sm">05.</span>
-                    <h2 class="text-2xl md:text-3xl font-bold">Open Source</h2>
-                    <div class="flex-1 section-line ml-4"></div>
-                </div>
-                <ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0" id="opensource-list"></ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- Education Section -->
-    <section id="education" class="py-24 px-6 bg-surface/40">
-        <div class="max-w-6xl mx-auto">
-            <div class="scroll-reveal">
-                <div class="flex items-center gap-3 mb-10">
-                    <span class="text-accent font-mono text-sm">06.</span>
-                    <h2 class="text-2xl md:text-3xl font-bold">Education &amp; Certifications</h2>
-                    <div class="flex-1 section-line ml-4"></div>
-                </div>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="space-y-4" id="education-list"></div>
-                    <div class="space-y-4" id="certifications-list"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-24 px-6">
-        <div class="max-w-6xl mx-auto">
-            <div class="scroll-reveal">
-                <div class="flex items-center gap-3 mb-10">
-                    <span class="text-accent font-mono text-sm">07.</span>
-                    <h2 class="text-2xl md:text-3xl font-bold">Get In Touch</h2>
-                    <div class="flex-1 section-line ml-4"></div>
-                </div>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="surface-card p-6">
-                        <h3 class="font-mono text-accent mb-6">// Contact Info</h3>
-                        <div class="space-y-4">
-                            <a href="mailto:naveenbusiraju@gmail.com" class="flex items-center gap-4 text-ink hover:text-accent transition-colors">
-                                <span class="icon-btn shrink-0" aria-hidden="true">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" focusable="false">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                    </svg>
-                                </span>
-                                <span>naveenbusiraju@gmail.com</span>
-                            </a>
-                            <a href="tel:+919493534035" class="flex items-center gap-4 text-ink hover:text-accent transition-colors">
-                                <span class="icon-btn shrink-0" aria-hidden="true">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" focusable="false">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                                    </svg>
-                                </span>
-                                <span>+91 9493534035</span>
-                            </a>
-                            <a href="https://www.linkedin.com/in/naveenbusiraju/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 text-ink hover:text-accent transition-colors">
-                                <span class="icon-btn shrink-0" aria-hidden="true">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" focusable="false">
-                                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                                    </svg>
-                                </span>
-                                <span>linkedin.com/in/naveenbusiraju</span>
-                            </a>
+                        <!-- Values are recomputed from profile.json; these are accurate fallbacks. -->
+                        <div class="metrics" id="metrics">
+                            <div class="metrics__item">
+                                <span class="metrics__value" data-metric="experience">5+</span>
+                                <span class="metrics__label">Years shipping</span>
+                            </div>
+                            <div class="metrics__item">
+                                <span class="metrics__value" data-metric="projects">8</span>
+                                <span class="metrics__label">Projects built</span>
+                            </div>
+                            <div class="metrics__item">
+                                <span class="metrics__value" data-metric="live">7</span>
+                                <span class="metrics__label">Running live</span>
+                            </div>
+                            <div class="metrics__item">
+                                <span class="metrics__value" data-metric="certs">2</span>
+                                <span class="metrics__label">Cloud certs</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="surface-card p-6">
-                        <h3 class="font-mono text-accent mb-6">// Send Message</h3>
-                        <p class="text-muted mb-6">
-                            Interested in working together or have a question? Feel free to reach out.
-                        </p>
-                        <a href="mailto:naveenbusiraju@gmail.com?subject=Hello%20from%20Portfolio"
-                           class="btn btn-primary w-full font-mono">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                            </svg>
-                            <span>Send Email</span>
-                        </a>
-                        <p class="text-muted text-sm mt-4 font-mono text-center">naveenbusiraju@gmail.com</p>
+
+                    <div class="portrait">
+                        <div class="portrait__frame">
+                            <img src="/naveen-busiraju.jpg"
+                                 alt="Naveen Busiraju, Gen AI Consultant"
+                                 width="340" height="408"
+                                 fetchpriority="high" decoding="async">
+                        </div>
+                        <div class="portrait__caption">
+                            <span>London, UK</span>
+                            <span class="portrait__socials">
+                                <a href="https://github.com/vnaveenb" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                                </a>
+                                <a href="https://www.linkedin.com/in/naveenbusiraju/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 110-4.125 2.062 2.062 0 010 4.125zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                                </a>
+                                <a href="mailto:naveenbusiraju@gmail.com" aria-label="Email">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                </a>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- ============================ Stack strip ============================ -->
+        <section class="strip" aria-label="Tools and platforms">
+            <div class="shell strip__inner">
+                <p class="strip__label">Day to day</p>
+                <ul class="strip__list">
+                    <li>LangGraph</li>
+                    <li>LangChain</li>
+                    <li>Azure OpenAI</li>
+                    <li>FastAPI</li>
+                    <li>Google Cloud</li>
+                    <li>AWS</li>
+                    <li>Docker</li>
+                    <li>Kubernetes</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================ Work ============================ -->
+        <section class="section" id="work">
+            <div class="shell">
+                <div class="section__head reveal">
+                    <h2 class="section__title">Selected work</h2>
+                    <p class="section__note">
+                        Things I designed and shipped end to end. Most are live — open one
+                        and poke at it; the source is on GitHub.
+                    </p>
+                </div>
+                <div class="work-grid" id="work-grid"></div>
+            </div>
+        </section>
+
+        <!-- ============================ Experience ============================ -->
+        <section class="section section--sunken" id="experience">
+            <div class="shell">
+                <div class="section__head reveal">
+                    <h2 class="section__title">Experience</h2>
+                    <p class="section__note">
+                        Five-plus years at Atos, moving from cloud and full-stack delivery
+                        into applied generative AI.
+                    </p>
+                </div>
+                <div class="timeline" id="timeline"></div>
+            </div>
+        </section>
+
+        <!-- ============================ Skills ============================ -->
+        <section class="section" id="skills">
+            <div class="shell">
+                <div class="section__head reveal">
+                    <h2 class="section__title">Toolkit</h2>
+                </div>
+                <div class="skills" id="skills-grid"></div>
+            </div>
+        </section>
+
+        <!-- ============================ Credentials ============================ -->
+        <section class="section section--sunken" id="credentials">
+            <div class="shell">
+                <div class="section__head reveal">
+                    <h2 class="section__title">Education &amp; certifications</h2>
+                </div>
+                <div class="creds">
+                    <div>
+                        <p class="eyebrow" style="margin-bottom:0.9rem">Education</p>
+                        <div class="cred-list" id="education-list"></div>
+                    </div>
+                    <div>
+                        <p class="eyebrow" style="margin-bottom:0.9rem">Certifications</p>
+                        <div class="cred-list" id="certifications-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ Contact ============================ -->
+        <section class="section" id="contact">
+            <div class="shell">
+                <div class="contact reveal">
+                    <div>
+                        <h2 class="contact__title">Got a problem worth solving?</h2>
+                        <p class="contact__text">
+                            Whether it is an AI system you want built, one that stalled
+                            before production, or a second opinion on an architecture —
+                            send a note. I reply to everything.
+                        </p>
+                        <div class="contact__actions">
+                            <a class="btn btn--solid" href="mailto:naveenbusiraju@gmail.com?subject=Hello%20from%20naveenb.dev">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                Email me
+                            </a>
+                            <button type="button" class="btn btn--outline" data-copy-resume>
+                                <span data-copy-label>Copy résumé</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="contact__list">
+                        <a href="mailto:naveenbusiraju@gmail.com">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            naveenbusiraju@gmail.com
+                        </a>
+                        <a href="tel:+919493534035">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            +91 9493534035
+                        </a>
+                        <a href="https://www.linkedin.com/in/naveenbusiraju/" target="_blank" rel="noopener noreferrer">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 110-4.125 2.062 2.062 0 010 4.125zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                            linkedin.com/in/naveenbusiraju
+                        </a>
+                        <a href="https://github.com/vnaveenb" target="_blank" rel="noopener noreferrer">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                            github.com/vnaveenb
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-bd py-8 px-6">
-        <div class="max-w-6xl mx-auto text-center">
-            <p class="font-mono text-sm text-muted">
-                &copy; <span id="current-year"></span> Venkata Naveen Busiraju
-            </p>
-            <p class="font-mono text-xs text-muted mt-3">
-                <a href="/about" class="hover:text-accent transition-colors">About Naveen Busiraju</a>
-                <span class="mx-2" aria-hidden="true">·</span>
-                <a href="https://naveenb.dev" class="hover:text-accent transition-colors">naveenb.dev</a>
-            </p>
+    <footer class="footer">
+        <div class="shell footer__inner">
+            <p>&copy; <span id="year">2026</span> Venkata Naveen Busiraju</p>
+            <nav class="footer__links" aria-label="Footer">
+                <a href="/about">About</a>
+                <a href="https://github.com/vnaveenb" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://www.linkedin.com/in/naveenbusiraju/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a href="#main">Back to top</a>
+            </nav>
         </div>
     </footer>
 
-    <script src="/js/main.js"></script>
-    <script type="module" src="/js/three-scene.js"></script>
+    <script src="/js/main.js" defer></script>
 </body>
 </html>

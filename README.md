@@ -1,29 +1,50 @@
-# Naveen Busiraju - Portfolio
+# naveenb.dev
 
-Personal portfolio website showcasing my experience as a Gen AI Developer, Full-Stack Engineer, and Cloud Solutions Architect.
+Personal site for Naveen Busiraju — Gen AI engineer, full-stack developer, cloud architect.
 
-## Quick Start
+## Quick start
 
 ```bash
 npm install
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000).
 
-## Tech Stack
+## Stack
 
-- **Frontend**: HTML, Tailwind CSS, JavaScript
-- **3D / animation**: Three.js (self-hosted ES module)
-- **Backend**: Node.js + Express
-- **Data**: JSON-based profile configuration
+- **Frontend**: hand-written HTML + CSS + vanilla JS. No framework, no CDN, no build step.
+- **Backend**: Node.js + Express, with helmet (CSP), compression, and rate limiting.
+- **Content**: everything below the hero renders from `public/data/profile.json`.
 
-## Features
+## Structure
 
-- Modern, data-driven design rendered from `data/profile.json`
-- Three.js hero: animated particle-network background, mouse-reactive 3D object, and scroll-reactive parallax
-- Light / dark theme toggle (persisted, respects `prefers-color-scheme`)
-- Copy as Markdown resume functionality
-- Responsive layout with accessible keyboard navigation
-- Respects `prefers-reduced-motion` (animations disabled, static fallback)
-- Smooth scroll animations
+```
+public/
+  index.html          landing page — hero is static HTML, the rest is rendered
+  about.html          plain entity page for search engines
+  css/site.css        the entire stylesheet
+  js/main.js          theme, nav, scroll behaviour, and the renderers
+  data/profile.json   single source of truth for CV content
+index.js              Express server
+```
+
+## Editing content
+
+Change `public/data/profile.json` and reload — projects, experience, skills,
+education, and certifications all re-render from it, and the hero metrics
+(years of experience, project count, live-app count, cert count) are derived
+rather than hard-coded. The hero headline and section intros are prose and live
+in `index.html`.
+
+Set `"featured": true` on a project to give it the wide highlighted card at the
+top of the work grid.
+
+## Notes
+
+- Theme is applied before first paint from `localStorage`, defaulting to the OS
+  preference, so there is no flash of the wrong theme.
+- The hero, navigation, and contact details are static markup, so the page is
+  meaningful before `main.js` runs. The CV lists below them are rendered from
+  the JSON and do need JavaScript; `about.html` covers that case for crawlers.
+- All motion respects `prefers-reduced-motion`.

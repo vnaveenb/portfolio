@@ -12,14 +12,6 @@
     "twitter": "https://x.com/naveenbusiraju1",
     "github": "https://github.com/vnaveenb"
   },
-  "hero": {
-    "greeting": "Hi, I'm Naveen.",
-    "headline": ["GenAI Consultant.", "Engineer.", "Builder."],
-    "tagline": "I design and ship production AI systems: RAG pipelines, multi-agent workflows, and document intelligence that solve real business problems.",
-    "specializing": ["LLMs & RAG", "Agentic AI", "Cloud Architecture", "Full-Stack Engineering", "Enterprise Software"],
-    "ctaPrimary": { "label": "View Projects", "href": "#projects" },
-    "ctaSecondary": { "label": "Book a Call", "href": "mailto:naveenbusiraju@gmail.com?subject=Let%27s%20talk" }
-  },
   "projects": [
     {
       "title": "Agent Tool Calls & Retries",
@@ -65,7 +57,8 @@
     },
     {
       "title": "Agentic App Builder",
-      "description": "Multi-agent pipeline that turns a plain-English idea into a fully coded, tested, and live-previewed web application. Orchestrates four specialized LLM agents Planner, Developer, Tester, and Reviewer in a LangGraph state machine that iterates until the generated app passes tests. Supports five runtimes (Python, Node.js, React, Angular, Static) with isolated subprocess sandboxes, dynamic port allocation, live hot-reload, and a reverse-proxy that feeds browser console errors back into the agent loop. Real-time progress streams via Server-Sent Events.",
+      "featured": true,
+      "description": "Multi-agent pipeline that turns a plain-English idea into a fully coded, tested, and live-previewed web application. Four specialised LLM agents — Planner, Developer, Tester, Reviewer — run in a LangGraph state machine that iterates until the generated app passes its tests. Five runtimes (Python, Node.js, React, Angular, Static) execute in isolated subprocess sandboxes with dynamic port allocation and hot reload, behind a reverse proxy that feeds browser console errors back into the agent loop. Progress streams live over Server-Sent Events.",
       "liveUrl": "https://coder.naveenb.dev/",
       "githubUrl": "https://github.com/vnaveenb/agentic-app-builder/",
       "tags": ["LangGraph", "LangChain", "FastAPI", "SSE", "Docker", "Python 3.12"]
@@ -79,7 +72,7 @@
     }
   ],
   "about": {
-    "profile": "Dynamic and results-driven Gen AI Developer with proven full-stack expertise (Java, Spring Boot, Node.js, Angular, Python) and a passion for leveraging cutting-edge technologies to drive business success. Adept at mapping business requirements to state-of-the-art (SOTA) AI solutions, including generative AI and retrieval-augmented generation (RAG). Skilled in cloud-native development (GCP, AWS), automation, and modernizing legacy systems, consistently optimizing performance across monolithic and microservices architectures. Excels at leading teams through large-scale transformations, ensuring scalability, and delivering measurable impact through innovative AI-driven applications.",
+    "profile": "Gen AI engineer with five years at Atos, where I moved from cloud and full-stack delivery into building generative AI for enterprise use. My work is the unglamorous half of AI: long-context RAG over messy real documents, multi-agent workflows with schema enforcement and fault tolerance, and OCR-plus-LLM pipelines that have to be right often enough to touch an ERP. That has meant a 65% cut in course-material review time, 55% faster accounts-receivable resolution, and 96% field-level accuracy on invoice extraction. I still write the full stack around it — Java, Spring Boot, Node.js, Angular, Python — and ship it on GCP and AWS with Docker, Kubernetes, and GitHub Actions.",
     "highlights": [
       {
         "icon": "robot",

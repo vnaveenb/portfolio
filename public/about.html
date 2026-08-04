@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Naveen Busiraju — Gen AI Consultant</title>
     <meta name="description" content="Naveen Busiraju is a Gen AI Consultant at Atos. Full-stack engineer and cloud architect building production LLM systems. Links to LinkedIn and GitHub.">
     <meta name="author" content="Naveen Busiraju">
+    <meta name="theme-color" content="#0b0c0e" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)">
     <link rel="canonical" href="https://naveenb.dev/about">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
     <!-- Open Graph -->
     <meta property="og:type" content="profile">
@@ -26,14 +28,8 @@
       "url": "https://naveenb.dev",
       "image": "https://naveenb.dev/naveen-busiraju.jpg",
       "jobTitle": "Gen AI Consultant",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "Atos"
-      },
-      "alumniOf": {
-        "@type": "CollegeOrUniversity",
-        "name": "University of East London"
-      },
+      "worksFor": { "@type": "Organization", "name": "Atos" },
+      "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of East London" },
       "sameAs": [
         "https://www.linkedin.com/in/naveenbusiraju/",
         "https://github.com/vnaveenb",
@@ -42,67 +38,56 @@
     }
     </script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('theme');
+                var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+                if (saved === 'light' || (!saved && prefersLight)) {
+                    document.documentElement.classList.add('light');
+                }
+            } catch (e) { /* private mode — fall back to dark */ }
+        })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        mono: ['JetBrains Mono', 'monospace'],
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        terminal: {
-                            bg: '#0a0a0a',
-                            surface: '#141414',
-                            border: '#262626',
-                            green: '#4ade80',
-                            blue: '#60a5fa',
-                            purple: '#a78bfa',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="/css/site.css">
 </head>
-<body class="bg-terminal-bg text-gray-100 font-sans antialiased">
-    <main id="main-content" class="max-w-3xl mx-auto px-6 py-20">
-        <div class="flex flex-col sm:flex-row sm:items-center gap-5 mb-10">
-            <img src="/naveen-busiraju.jpg"
-                 alt="Naveen Busiraju - Gen AI Consultant"
-                 width="96" height="96"
-                 class="w-24 h-24 rounded-xl border-2 border-terminal-green object-cover shadow-lg shrink-0">
+<body>
+    <main class="shell section" id="main">
+        <div class="about-head">
+            <img src="/naveen-busiraju.jpg" alt="Naveen Busiraju, Gen AI Consultant" width="96" height="96" decoding="async">
             <div>
-                <h1 class="text-3xl md:text-4xl font-bold text-white">Naveen Busiraju</h1>
-                <p class="text-lg text-terminal-green font-mono mt-1">Gen AI Consultant at Atos</p>
+                <h1 class="section__title">Naveen Busiraju</h1>
+                <p class="mono muted">Gen AI Consultant at Atos · London, UK</p>
             </div>
         </div>
 
-        <p class="text-gray-300 leading-relaxed text-lg mb-6">
-            <strong>Naveen Busiraju</strong> (Venkata Naveen Busiraju) is a
-            <strong>Gen AI Consultant at Atos</strong>, based in London, UK. He builds
-            production LLM systems — retrieval-augmented generation pipelines, multi-agent
-            workflows, and document-AI — with a full-stack engineering background across
-            Java, Spring Boot, Node.js, Angular, and Python. He is Google Cloud and AWS
-            certified.
-        </p>
+        <div class="prose">
+            <p>
+                <strong>Naveen Busiraju</strong> (Venkata Naveen Busiraju) is a
+                <strong>Gen AI Consultant at Atos</strong>, based in London, UK. He builds
+                production LLM systems — retrieval-augmented generation pipelines, multi-agent
+                workflows, and document-AI — on a full-stack engineering background spanning
+                Java, Spring Boot, Node.js, Angular, and Python. He is Google Cloud and AWS
+                certified.
+            </p>
 
-        <h2 class="text-xl font-bold text-white mb-4">Links</h2>
-        <ul class="space-y-2 font-mono text-terminal-blue mb-10">
-            <li><a href="https://naveenb.dev" class="hover:text-terminal-green underline">naveenb.dev</a> — Portfolio</li>
-            <li><a href="https://www.linkedin.com/in/naveenbusiraju/" class="hover:text-terminal-green underline">LinkedIn: linkedin.com/in/naveenbusiraju</a></li>
-            <li><a href="https://github.com/vnaveenb" class="hover:text-terminal-green underline">GitHub: github.com/vnaveenb</a></li>
-            <li><a href="https://x.com/naveenbusiraju1" class="hover:text-terminal-green underline">Twitter/X: x.com/naveenbusiraju1</a></li>
-            <li><a href="mailto:naveenbusiraju@gmail.com" class="hover:text-terminal-green underline">naveenbusiraju@gmail.com</a></li>
-        </ul>
+            <h2>Links</h2>
+            <ul class="cred-list">
+                <li><a href="https://naveenb.dev">naveenb.dev</a> — portfolio</li>
+                <li><a href="https://www.linkedin.com/in/naveenbusiraju/">linkedin.com/in/naveenbusiraju</a></li>
+                <li><a href="https://github.com/vnaveenb">github.com/vnaveenb</a></li>
+                <li><a href="https://x.com/naveenbusiraju1">x.com/naveenbusiraju1</a></li>
+                <li><a href="mailto:naveenbusiraju@gmail.com">naveenbusiraju@gmail.com</a></li>
+            </ul>
 
-        <a href="/" class="inline-flex items-center gap-2 font-mono text-terminal-green hover:underline">
-            <span>&larr; Back to naveenb.dev</span>
-        </a>
+            <p style="margin-top:2.5rem">
+                <a href="/" class="btn btn--outline">&larr; Back to naveenb.dev</a>
+            </p>
+        </div>
     </main>
 </body>
 </html>

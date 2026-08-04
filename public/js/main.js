@@ -1,515 +1,459 @@
-// Portfolio Main JavaScript
-// Loads data from profile.json and handles all interactions
+/* naveenb.dev — progressive enhancement.
+ *
+ * The hero is static HTML, so the page is complete and readable before this
+ * file runs (and if it never runs at all). Everything below either wires up an
+ * interaction or renders a list from /data/profile.json, which is the single
+ * source of truth for the CV content.
+ */
 
-let globalProfileData = null;
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // Load profile data
-    const profileData = await loadProfileData();
-    globalProfileData = profileData;
-    
-    if (profileData) {
-        renderHero(profileData.hero);
-        calculateExperience(profileData.experience);
-        renderStats(profileData);
-        renderTrustRow(profileData.skills);
-        renderProjects(profileData.projects);
-        renderApps(profileData.projects);
-        renderExperience(profileData.experience);
-        renderSkills(profileData.skills);
-        renderOpenSource(profileData.projects);
-        renderEducation(profileData.education);
-        renderCertifications(profileData.certifications);
-        initCopyMarkdown();
-    }
+/* ---------------------------------------------------------------- helpers */
 
-    // Initialize interactions
-    initThemeToggle();
-    initMobileMenu();
-    initScrollReveal();
-    initSmoothScroll();
-    const yearEl = document.getElementById('current-year');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
-});
-
-// Load profile data from JSON
-async function loadProfileData() {
-    try {
-        const response = await fetch('/data/profile.json');
-        return await response.json();
-    } catch (error) {
-        console.error('Error loading profile data:', error);
-        return null;
-    }
+function esc(value) {
+    return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
-// Calculate and display experience (sums only actual working periods, excluding gaps)
-function calculateExperience(experienceEntries) {
-    const monthNames = {
-        'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
-        'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+function truncate(str, max) {
+    const s = String(str || '');
+    if (s.length <= max) return s;
+    // Cut on a word boundary so descriptions never end mid-word.
+    return s.slice(0, s.lastIndexOf(' ', max)).replace(/[,;:.\s]+$/, '') + '…';
+}
+
+function repoLabel(url) {
+    try { return new URL(url).pathname.replace(/^\/|\/$/g, ''); }
+    catch { return 'GitHub'; }
+}
+
+function hostLabel(url) {
+    try { return new URL(url).hostname.replace(/^www\./, ''); }
+    catch { return 'Live'; }
+}
+
+const ICON = {
+    external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5M19 5l-8 8M18 14v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h4"/></svg>',
+    github: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>',
+};
+
+/* ------------------------------------------------------------------ theme */
+
+function initTheme() {
+    const root = document.documentElement;
+    const toggles = $$('[data-theme-toggle]');
+
+    const paint = (theme) => {
+        const light = theme === 'light';
+        root.classList.toggle('light', light);
+        $$('[data-icon-dark]').forEach(el => { el.hidden = light; });
+        $$('[data-icon-light]').forEach(el => { el.hidden = !light; });
+        toggles.forEach(btn => {
+            btn.setAttribute('aria-pressed', String(light));
+            btn.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+        });
     };
 
-    function parseDate(dateStr) {
-        if (dateStr === 'Present') return new Date();
-        const parts = dateStr.split(' ');
-        const month = monthNames[parts[0]];
-        const year = parseInt(parts[1]);
-        return new Date(year, month, 1);
-    }
+    // The inline script in <head> already applied the stored/system theme;
+    // sync the icons and ARIA state to whatever it decided.
+    paint(root.classList.contains('light') ? 'light' : 'dark');
 
-    let totalMonths = 0;
+    toggles.forEach(btn => btn.addEventListener('click', () => {
+        const next = root.classList.contains('light') ? 'dark' : 'light';
+        try { localStorage.setItem('theme', next); } catch { /* private mode */ }
+        paint(next);
+    }));
 
-    experienceEntries.forEach(job => {
-        const start = parseDate(job.startDate);
-        const end = parseDate(job.endDate);
-        // +1 to include both start and end months
-        let diffMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
-        if (diffMonths < 0) diffMonths = 0;
-        totalMonths += diffMonths;
+    // Follow the OS while the visitor has not made an explicit choice.
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+        let stored = null;
+        try { stored = localStorage.getItem('theme'); } catch { /* ignore */ }
+        if (!stored) paint(e.matches ? 'light' : 'dark');
     });
-
-    const years = Math.floor(totalMonths / 12);
-    const months = totalMonths % 12;
-    
-    let experienceText = '';
-    if (years > 0) {
-        experienceText += `${years} Year${years > 1 ? 's' : ''}`;
-    }
-    if (months > 0) {
-        if (years > 0) experienceText += ' ';
-        experienceText += `${months} Month${months > 1 ? 's' : ''}`;
-    }
-
-    const statExp = document.getElementById('stat-experience');
-    if (statExp) statExp.textContent = years >= 1 ? `${years}+ yrs` : `${months} mo`;
 }
 
-// ---- Small HTML helpers (data is trusted local JSON, escaped defensively) ----
-function escapeHtml(str) {
-    return String(str == null ? '' : str)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-function escapeAttr(str) { return escapeHtml(str); }
-function truncate(str, n) {
-    const s = String(str || '');
-    return s.length > n ? s.slice(0, n).trimEnd() + '\u2026' : s;
-}
-function shortRepo(url) {
-    try { const u = new URL(url); return 'github.com' + u.pathname.replace(/\/$/, ''); }
-    catch (e) { return url; }
+/* ------------------------------------------------------------- navigation */
+
+function initNav() {
+    const toggle = $('#nav-toggle');
+    const drawer = $('#drawer');
+    if (!toggle || !drawer) return;
+
+    const setOpen = (open) => {
+        drawer.classList.toggle('is-open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    };
+
+    toggle.addEventListener('click', () => setOpen(!drawer.classList.contains('is-open')));
+    $$('a', drawer).forEach(link => link.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+            setOpen(false);
+            toggle.focus();
+        }
+    });
 }
 
-// Render hero copy
-function renderHero(hero) {
-    if (!hero) return;
-    const greeting = document.getElementById('hero-greeting');
-    if (greeting) greeting.textContent = hero.greeting || '';
+function initHeaderState() {
+    const header = $('#header');
+    if (!header) return;
+    const sync = () => header.classList.toggle('is-stuck', window.scrollY > 8);
+    window.addEventListener('scroll', sync, { passive: true });
+    sync();
+}
 
-    const headline = document.getElementById('hero-headline');
-    if (headline && Array.isArray(hero.headline)) {
-        const last = hero.headline.length - 1;
-        headline.innerHTML = hero.headline.map((word, i) =>
-            i === last
-                ? `<span class="accent-word">${escapeHtml(word)}</span>`
-                : `<span class="block sm:inline">${escapeHtml(word)} </span>`
-        ).join('');
+/* Highlight the section currently on screen in the desktop nav. */
+function initSectionSpy() {
+    const links = $$('.nav__link[href^="#"]');
+    if (!links.length || !('IntersectionObserver' in window)) return;
+
+    const byId = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+    const sections = Array.from(byId.keys())
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+
+    const spy = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            links.forEach(a => a.removeAttribute('aria-current'));
+            const active = byId.get(entry.target.id);
+            if (active) active.setAttribute('aria-current', 'true');
+        });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+
+    sections.forEach(s => spy.observe(s));
+}
+
+function initReveal() {
+    const items = $$('.reveal');
+    if (!items.length) return;
+    if (!('IntersectionObserver' in window)) {
+        items.forEach(el => el.classList.add('is-visible'));
+        return;
     }
-
-    const tagline = document.getElementById('hero-tagline');
-    if (tagline) tagline.textContent = hero.tagline || '';
-
-    const spec = document.getElementById('hero-specializing');
-    if (spec && Array.isArray(hero.specializing)) {
-        spec.innerHTML = hero.specializing.map(s => `<li class="chip">${escapeHtml(s)}</li>`).join('');
-    }
-
-    const cta = document.getElementById('hero-cta');
-    if (cta) {
-        const primary = hero.ctaPrimary || { label: 'View Projects', href: '#projects' };
-        const secondary = hero.ctaSecondary || { label: 'Book a Call', href: 'mailto:naveenbusiraju@gmail.com' };
-        cta.innerHTML =
-            `<a href="${escapeAttr(primary.href)}" class="btn btn-primary">${escapeHtml(primary.label)}</a>` +
-            `<a href="${escapeAttr(secondary.href)}" class="btn btn-ghost">${escapeHtml(secondary.label)}</a>`;
-    }
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    items.forEach(el => io.observe(el));
 }
 
-// Render hero stat cards (derived from data)
-function renderStats(data) {
-    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+/* ------------------------------------------------------------------ stats */
+
+function monthsBetween(startStr, endStr) {
+    const MONTHS = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+    const parse = (str) => {
+        if (!str || str === 'Present') return new Date();
+        const [month, year] = String(str).split(' ');
+        return new Date(Number(year), MONTHS[month] ?? 0, 1);
+    };
+    const start = parse(startStr);
+    const end = parse(endStr);
+    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
+    return Math.max(0, months);
+}
+
+function renderMetrics(data) {
     const projects = data.projects || [];
-    set('stat-projects', `${projects.length}+`);
-    set('stat-apps', `${projects.filter(p => p.liveUrl).length}`);
-    set('stat-certs', `${(data.certifications || []).length}`);
+    // Sums actual employed periods so the career break is not counted.
+    const totalMonths = (data.experience || [])
+        .reduce((sum, job) => sum + monthsBetween(job.startDate, job.endDate), 0);
+    const years = Math.floor(totalMonths / 12);
+
+    const values = {
+        experience: years >= 1 ? `${years}+` : `${totalMonths}mo`,
+        projects: String(projects.length),
+        live: String(projects.filter(p => p.liveUrl).length),
+        certs: String((data.certifications || []).length),
+    };
+
+    Object.entries(values).forEach(([key, value]) => {
+        const el = $(`[data-metric="${key}"]`);
+        if (el) el.textContent = value;
+    });
 }
 
-// Render the "building with" trust row from cloud + devops skills
-function renderTrustRow(skills) {
-    const row = document.getElementById('trust-row');
-    if (!row || !skills) return;
-    const cloud = (skills.cloud && skills.cloud.items) || [];
-    const devops = (skills.devops && skills.devops.items) || [];
-    const items = [...cloud, ...devops].slice(0, 8);
-    row.innerHTML = items.map(name => `<li class="font-mono text-sm text-muted">${escapeHtml(name)}</li>`).join('');
-}
+/* ------------------------------------------------------------------- work */
 
-// Render experience timeline
-function renderExperience(experience) {
-    const container = document.getElementById('experience-list');
-    if (!container || !experience) return;
+function workCard(project) {
+    const featured = Boolean(project.featured);
+    const tags = (project.tags || []).slice(0, featured ? 6 : 4);
+    const limit = featured ? 320 : 150;
 
-    container.innerHTML = experience.map(job => `
-        <div class="timeline-item">
-            <div class="surface-card p-6">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                    <div>
-                        <h3 class="text-xl font-bold text-ink">${escapeHtml(job.title)}</h3>
-                        <p class="text-accent font-mono">${escapeHtml(job.company)}</p>
-                        ${job.location ? `<p class="text-muted text-sm mt-1">${escapeHtml(job.location)}</p>` : ''}
-                    </div>
-                    <span class="text-sm font-mono ${job.isCurrent ? 'text-accent' : 'text-muted'} mt-2 md:mt-0">
-                        ${escapeHtml(job.startDate)} \u2014 ${escapeHtml(job.endDate)}
-                    </span>
-                </div>
-                ${job.responsibilities.map(resp => `
-                    <div class="mt-4">
-                        <h4 class="text-accent2 font-mono text-sm mb-3">// ${escapeHtml(resp.category)}</h4>
-                        <ul class="space-y-2 list-none p-0 m-0">
-                            ${resp.items.map(item => `
-                                <li class="flex items-start gap-3 text-muted text-sm">
-                                    <span class="text-accent mt-1.5 shrink-0" aria-hidden="true">\u25B9</span>
-                                    <span>${escapeHtml(item)}</span>
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                `).join('')}
+    const links = [];
+    if (project.liveUrl) {
+        links.push(
+            `<a class="work__link" href="${esc(project.liveUrl)}" target="_blank" rel="noopener noreferrer">
+                ${ICON.external}<span>${esc(hostLabel(project.liveUrl))}</span>
+            </a>`
+        );
+    }
+    if (project.githubUrl) {
+        links.push(
+            `<a class="work__link" href="${esc(project.githubUrl)}" target="_blank" rel="noopener noreferrer">
+                ${ICON.github}<span>${esc(repoLabel(project.githubUrl))}</span>
+            </a>`
+        );
+    }
+
+    return `
+        <article class="card card--lift work reveal${featured ? ' work--feature' : ''}">
+            <div class="work__top">
+                <h3 class="work__title">${esc(project.title)}</h3>
+                ${project.liveUrl ? '<span class="pill">Live</span>' : ''}
             </div>
-        </div>
+            <p class="work__desc">${esc(truncate(project.description, limit))}</p>
+            <ul class="tag-row">
+                ${tags.map(tag => `<li class="tag">${esc(tag)}</li>`).join('')}
+            </ul>
+            <div class="work__links">${links.join('')}</div>
+        </article>
+    `;
+}
+
+function renderWork(projects) {
+    const grid = $('#work-grid');
+    if (!grid || !projects) return;
+
+    // Featured first, then anything with a live demo, then the rest.
+    const rank = (p) => (p.featured ? 0 : p.liveUrl ? 1 : 2);
+    const ordered = [...projects].sort((a, b) => rank(a) - rank(b));
+
+    grid.innerHTML = ordered.map(workCard).join('');
+}
+
+/* ------------------------------------------------------------- experience */
+
+function renderExperience(experience) {
+    const timeline = $('#timeline');
+    if (!timeline || !experience) return;
+
+    timeline.innerHTML = experience.map(job => `
+        <article class="card role reveal">
+            <header class="role__head">
+                <div>
+                    <h3 class="role__title">${esc(job.title)}</h3>
+                    <p class="role__meta">
+                        <span class="role__company">${esc(job.company)}</span>
+                        ${job.location ? `<span aria-hidden="true">·</span><span>${esc(job.location)}</span>` : ''}
+                    </p>
+                </div>
+                <p class="role__dates${job.isCurrent ? ' role__dates--current' : ''}">
+                    ${esc(job.startDate)} – ${esc(job.endDate)}
+                </p>
+            </header>
+            ${(job.responsibilities || []).map(group => `
+                <div class="role__group">
+                    ${group.category && group.category !== 'General'
+                        ? `<h4 class="role__group-title">${esc(group.category)}</h4>` : ''}
+                    <ul class="role__points">
+                        ${(group.items || []).map(item => `<li>${esc(item)}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('')}
+        </article>
     `).join('');
 }
 
-// Render skills section
-function renderSkills(skills) {
-    const container = document.getElementById('skills-grid');
-    if (!container || !skills) return;
+/* ----------------------------------------------------------------- skills */
 
-    let html = '';
-    for (const [, skill] of Object.entries(skills)) {
-        if (skill.categories) {
-            html += `
-                <div class="md:col-span-2 surface-card p-6">
-                    <h3 class="font-mono text-accent mb-4">// ${escapeHtml(skill.title)}</h3>
-                    <div class="grid md:grid-cols-2 gap-4">
-                        ${skill.categories.map(cat => `
+function renderSkills(skills) {
+    const grid = $('#skills-grid');
+    if (!grid || !skills) return;
+
+    grid.innerHTML = Object.values(skills).map(group => {
+        if (group.categories) {
+            return `
+                <section class="card skill skill--wide reveal">
+                    <h3 class="skill__title">${esc(group.title)}</h3>
+                    <div class="skill__sub">
+                        ${group.categories.map(cat => `
                             <div>
-                                <p class="text-muted text-sm mb-2">${escapeHtml(cat.name)}</p>
-                                <div class="flex flex-wrap gap-2">
-                                    ${cat.items.map(item => `<span class="chip">${escapeHtml(item)}</span>`).join('')}
-                                </div>
+                                <p class="skill__sub-title">${esc(cat.name)}</p>
+                                <ul class="tag-row">
+                                    ${cat.items.map(item => `<li class="tag">${esc(item)}</li>`).join('')}
+                                </ul>
                             </div>
                         `).join('')}
                     </div>
-                </div>
-            `;
-        } else if (skill.items) {
-            html += `
-                <div class="surface-card p-6">
-                    <h3 class="font-mono text-accent mb-4">// ${escapeHtml(skill.title)}</h3>
-                    <div class="flex flex-wrap gap-2">
-                        ${skill.items.map(item => `<span class="chip">${escapeHtml(item)}</span>`).join('')}
-                    </div>
-                </div>
+                </section>
             `;
         }
-    }
-
-    container.innerHTML = html;
+        if (group.items) {
+            return `
+                <section class="card skill reveal">
+                    <h3 class="skill__title">${esc(group.title)}</h3>
+                    <ul class="tag-row">
+                        ${group.items.map(item => `<li class="tag">${esc(item)}</li>`).join('')}
+                    </ul>
+                </section>
+            `;
+        }
+        return '';
+    }).join('');
 }
 
-// Render education
+/* ------------------------------------------------------------ credentials */
+
 function renderEducation(education) {
-    const container = document.getElementById('education-list');
-    if (!container || !education) return;
-
-    container.innerHTML = `
-        <h3 class="font-mono text-accent mb-4">// Education</h3>
-        ${education.map(edu => `
-            <div class="surface-card p-5 mb-4">
-                <h4 class="font-semibold text-ink mb-1">${escapeHtml(edu.degree)}</h4>
-                <p class="text-accent text-sm">${escapeHtml(edu.institution)}</p>
-                <p class="text-muted text-sm font-mono mt-2">${escapeHtml(edu.startDate)} \u2014 ${escapeHtml(edu.endDate)}</p>
+    const list = $('#education-list');
+    if (!list || !education) return;
+    list.innerHTML = education.map(edu => `
+        <article class="card cred reveal">
+            <div class="cred__body">
+                <h3 class="cred__name">${esc(edu.degree)}</h3>
+                <p class="cred__org">${esc(edu.institution)}</p>
+                <span class="cred__dates">${esc(edu.startDate)} – ${esc(edu.endDate)}</span>
             </div>
-        `).join('')}
-    `;
-}
-
-// Render certifications
-function renderCertifications(certifications) {
-    const container = document.getElementById('certifications-list');
-    if (!container || !certifications) return;
-
-    container.innerHTML = `
-        <h3 class="font-mono text-accent2 mb-4">// Certifications</h3>
-        ${certifications.map(cert => `
-            <div class="surface-card p-5 mb-4">
-                <h4 class="font-semibold text-ink text-sm">${escapeHtml(cert.name)}</h4>
-                <p class="text-muted text-sm">${escapeHtml(cert.issuer)}</p>
-                <p class="text-muted text-xs font-mono mt-1">Issued: ${escapeHtml(cert.issueDate)}${cert.expiryDate ? ` \u2022 Expires: ${escapeHtml(cert.expiryDate)}` : ''}</p>
-                ${cert.credentialUrl ? `<a href="${escapeAttr(cert.credentialUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-accent text-sm mt-2 hover:underline">View Credential</a>` : ''}
-            </div>
-        `).join('')}
-    `;
-}
-
-// Render projects section
-function renderProjects(projects) {
-    const container = document.getElementById('projects-list');
-    if (!container || !projects) return;
-
-    container.innerHTML = projects.map(project => `
-        <div class="surface-card p-6 flex flex-col group">
-            <div class="flex flex-wrap gap-2 mb-4">
-                ${(project.tags || []).slice(0, 4).map(tag => `<span class="chip">${escapeHtml(tag)}</span>`).join('')}
-            </div>
-            <h3 class="text-xl font-bold text-ink mb-2 group-hover:text-accent transition-colors">${escapeHtml(project.title)}</h3>
-            <p class="text-muted text-sm mb-5 leading-relaxed flex-1">${escapeHtml(truncate(project.description, 160))}</p>
-            <div class="flex flex-wrap gap-3">
-                ${project.liveUrl ? `<a href="${escapeAttr(project.liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary !py-2 !px-4 text-sm">Live Demo</a>` : ''}
-                ${project.githubUrl ? `<a href="${escapeAttr(project.githubUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost !py-2 !px-4 text-sm">GitHub</a>` : ''}
-            </div>
-        </div>
+        </article>
     `).join('');
 }
 
-// Render featured apps (projects that have a live URL)
-function renderApps(projects) {
-    const container = document.getElementById('apps-list');
-    if (!container || !projects) return;
-    const apps = projects.filter(p => p.liveUrl);
-    container.innerHTML = apps.map(app => `
-        <div class="surface-card p-6 flex flex-col">
-            <div class="flex items-center justify-between mb-3 gap-3">
-                <h3 class="text-lg font-bold text-ink">${escapeHtml(app.title)}</h3>
-                <span class="chip" style="color:#15803d;background:rgba(34,197,94,0.14);border-color:rgba(34,197,94,0.35)">Live</span>
-            </div>
-            <p class="text-muted text-sm mb-5 leading-relaxed flex-1">${escapeHtml(truncate(app.description, 120))}</p>
-            <div class="flex flex-wrap gap-3">
-                <a href="${escapeAttr(app.liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary !py-2 !px-4 text-sm">Open App</a>
-                ${app.githubUrl ? `<a href="${escapeAttr(app.githubUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost !py-2 !px-4 text-sm">GitHub</a>` : ''}
-            </div>
-        </div>
-    `).join('');
-}
-
-// Render open-source list (projects that have a GitHub URL)
-function renderOpenSource(projects) {
-    const list = document.getElementById('opensource-list');
-    if (!list || !projects) return;
-    const repos = projects.filter(p => p.githubUrl);
-    list.innerHTML = repos.map(p => `
-        <li class="surface-card p-5">
-            <a href="${escapeAttr(p.githubUrl)}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 text-ink hover:text-accent transition-colors">
-                <svg class="w-5 h-5 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-                <span>
-                    <span class="block font-semibold">${escapeHtml(p.title)}</span>
-                    <span class="block text-xs text-muted font-mono mt-1">${escapeHtml(shortRepo(p.githubUrl))}</span>
+function renderCertifications(certs) {
+    const list = $('#certifications-list');
+    if (!list || !certs) return;
+    list.innerHTML = certs.map(cert => `
+        <article class="card cred reveal">
+            <div class="cred__body">
+                <h3 class="cred__name">${esc(cert.name)}</h3>
+                <p class="cred__org">${esc(cert.issuer)}</p>
+                <span class="cred__dates">
+                    Issued ${esc(cert.issueDate)}${cert.expiryDate ? ` · Expires ${esc(cert.expiryDate)}` : ''}
                 </span>
-            </a>
-        </li>
+                ${cert.credentialUrl
+                    ? `<a class="cred__link" href="${esc(cert.credentialUrl)}" target="_blank" rel="noopener noreferrer">Verify ${ICON.external}</a>`
+                    : ''}
+            </div>
+        </article>
     `).join('');
 }
 
-// Mobile menu toggle
-function initMobileMenu() {
-    const btn = document.getElementById('mobile-menu-btn');
-    const menu = document.getElementById('mobile-menu');
-    if (!btn || !menu) return;
+/* ------------------------------------------------------- résumé to clipboard */
 
-    btn.addEventListener('click', () => {
-        const isHidden = menu.classList.toggle('hidden');
-        btn.setAttribute('aria-expanded', String(!isHidden));
-        btn.setAttribute('aria-label', isHidden ? 'Open menu' : 'Close menu');
-    });
+function toMarkdown(data) {
+    const { personal, social, about, experience, skills, education, certifications } = data;
+    const lines = [];
 
-    // Close menu when clicking a link
-    menu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            menu.classList.add('hidden');
-            btn.setAttribute('aria-expanded', 'false');
-            btn.setAttribute('aria-label', 'Open menu');
-        });
-    });
-}
+    lines.push(`# ${personal.name}`, '', `**${personal.title}**`, '');
+    lines.push(
+        `- Email: ${personal.email}`,
+        `- Phone: ${personal.phone}`,
+        `- Location: ${personal.location}`,
+        `- LinkedIn: ${social.linkedin}`,
+        `- GitHub: ${social.github}`,
+        ''
+    );
 
-// Light / dark theme toggle
-function initThemeToggle() {
-    const root = document.documentElement;
-    const toggles = [
-        document.getElementById('theme-toggle'),
-        document.getElementById('theme-toggle-mobile')
-    ].filter(Boolean);
-    const moon = document.getElementById('icon-moon');
-    const sun = document.getElementById('icon-sun');
+    lines.push('## Profile', '', about.profile, '');
 
-    function apply(theme) {
-        const isLight = theme === 'light';
-        root.classList.toggle('light', isLight);
-        if (moon) moon.classList.toggle('hidden', isLight);
-        if (sun) sun.classList.toggle('hidden', !isLight);
-        toggles.forEach(t => {
-            t.setAttribute('aria-pressed', String(isLight));
-            t.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
-        });
-        window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
-    }
-
-    apply(root.classList.contains('light') ? 'light' : 'dark');
-
-    toggles.forEach(t => t.addEventListener('click', () => {
-        const next = root.classList.contains('light') ? 'dark' : 'light';
-        try { localStorage.setItem('theme', next); } catch (e) { /* ignore */ }
-        apply(next);
-    }));
-}
-
-// Scroll reveal animation
-function initScrollReveal() {
-    const elements = document.querySelectorAll('.scroll-reveal');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('revealed');
-            }
-        });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
-    
-    elements.forEach(el => observer.observe(el));
-}
-
-// Smooth scroll for anchor links
-function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                const offset = 80;
-                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-}
-
-// Copy as Markdown functionality
-function initCopyMarkdown() {
-    const buttons = [
-        { btn: document.getElementById('copy-markdown-btn'), text: document.getElementById('copy-btn-text') },
-        { btn: document.getElementById('copy-markdown-btn-mobile'), text: document.getElementById('copy-btn-text-mobile') }
-    ];
-    
-    buttons.forEach(({ btn, text }) => {
-        if (btn && text && globalProfileData) {
-            btn.addEventListener('click', async () => {
-                const markdown = generateMarkdown(globalProfileData);
-                try {
-                    await navigator.clipboard.writeText(markdown);
-                    text.textContent = '\u2713 Copied!';
-                    setTimeout(() => { text.textContent = 'Resume'; }, 2000);
-                } catch (err) {
-                    text.textContent = '\u2717 Failed';
-                    setTimeout(() => { text.textContent = 'Resume'; }, 2000);
-                }
-            });
-        }
-    });
-}
-
-// Generate Markdown from profile data
-function generateMarkdown(data) {
-    const { personal, social, about, experience, skills, education, certifications, interests } = data;
-    
-    let md = '';
-    
-    // Header
-    md += `# ${personal.name}\n\n`;
-    md += `**${personal.title}**\n\n`;
-    
-    // Contact Info
-    md += `## Contact\n\n`;
-    md += `- 📧 Email: [${personal.email}](mailto:${personal.email})\n`;
-    md += `- 📱 Phone: ${personal.phone}\n`;
-    md += `- 📍 Location: ${personal.location}\n`;
-    if (social.linkedin) md += `- 💼 LinkedIn: [${social.linkedin}](${social.linkedin})\n`;
-    if (social.twitter) md += `- 🐦 Twitter: [${social.twitter}](${social.twitter})\n`;
-    if (social.github) md += `- 💻 GitHub: [${social.github}](${social.github})\n`;
-    md += `\n`;
-    
-    // About / Profile
-    md += `## Profile\n\n`;
-    md += `${about.profile}\n\n`;
-    
-    // Experience
-    md += `## Work Experience\n\n`;
+    lines.push('## Experience', '');
     experience.forEach(job => {
-        md += `### ${job.title}\n`;
-        md += `**${job.company}**${job.location ? ` | 📍 ${job.location}` : ''} | ${job.startDate} - ${job.endDate}\n\n`;
-        
-        job.responsibilities.forEach(resp => {
-            if (resp.category !== 'General') {
-                md += `#### ${resp.category}\n\n`;
-            }
-            resp.items.forEach(item => {
-                md += `- ${item}\n`;
-            });
-            md += `\n`;
+        lines.push(`### ${job.title} — ${job.company}`);
+        lines.push(`${job.location ? job.location + ' | ' : ''}${job.startDate} – ${job.endDate}`, '');
+        (job.responsibilities || []).forEach(group => {
+            if (group.category && group.category !== 'General') lines.push(`**${group.category}**`, '');
+            (group.items || []).forEach(item => lines.push(`- ${item}`));
+            lines.push('');
         });
     });
-    
-    // Skills
-    md += `## Technical Skills\n\n`;
-    for (const [key, skill] of Object.entries(skills)) {
-        md += `### ${skill.title}\n\n`;
-        if (skill.categories) {
-            skill.categories.forEach(cat => {
-                md += `**${cat.name}:** ${cat.items.join(', ')}\n\n`;
-            });
-        } else if (skill.items) {
-            md += `${skill.items.join(', ')}\n\n`;
+
+    lines.push('## Projects', '');
+    (data.projects || []).forEach(p => {
+        const links = [p.liveUrl && `Live: ${p.liveUrl}`, p.githubUrl && `Code: ${p.githubUrl}`]
+            .filter(Boolean).join(' | ');
+        lines.push(`### ${p.title}`, p.description, links, '');
+    });
+
+    lines.push('## Skills', '');
+    Object.values(skills).forEach(group => {
+        if (group.categories) {
+            lines.push(`**${group.title}**`);
+            group.categories.forEach(cat => lines.push(`- ${cat.name}: ${cat.items.join(', ')}`));
+        } else if (group.items) {
+            lines.push(`**${group.title}**: ${group.items.join(', ')}`);
         }
-    }
-    
-    // Education
-    md += `## Education\n\n`;
-    education.forEach(edu => {
-        md += `### ${edu.degree}\n`;
-        md += `**${edu.institution}** | ${edu.startDate} - ${edu.endDate}\n\n`;
+        lines.push('');
     });
-    
-    // Certifications
-    md += `## Certifications\n\n`;
+
+    lines.push('## Education', '');
+    education.forEach(edu => lines.push(`- **${edu.degree}**, ${edu.institution} (${edu.startDate} – ${edu.endDate})`));
+    lines.push('');
+
+    lines.push('## Certifications', '');
     certifications.forEach(cert => {
-        md += `- **${cert.name}** - ${cert.issuer} (${cert.issueDate})`;
-        if (cert.credentialUrl) md += ` [View Credential](${cert.credentialUrl})`;
-        md += `\n`;
+        lines.push(`- **${cert.name}** — ${cert.issuer}, ${cert.issueDate}${cert.credentialUrl ? ` (${cert.credentialUrl})` : ''}`);
     });
-    md += `\n`;
-    
-    // Interests
-    if (interests && interests.length > 0) {
-        md += `## Interests\n\n`;
-        md += interests.join(' | ') + `\n`;
-    }
-    
-    return md;
+
+    return lines.join('\n') + '\n';
 }
 
+function initCopyResume(data) {
+    const buttons = $$('[data-copy-resume]');
+    if (!buttons.length || !data) return;
+
+    buttons.forEach(btn => {
+        const label = $('[data-copy-label]', btn) || btn;
+        const original = label.textContent;
+
+        btn.addEventListener('click', async () => {
+            let ok = false;
+            try {
+                await navigator.clipboard.writeText(toMarkdown(data));
+                ok = true;
+            } catch {
+                ok = false;
+            }
+            label.textContent = ok ? 'Copied as Markdown' : 'Copy failed';
+            setTimeout(() => { label.textContent = original; }, 2200);
+        });
+    });
+}
+
+/* ------------------------------------------------------------------- boot */
+
+async function boot() {
+    initTheme();
+    initNav();
+    initHeaderState();
+    initSectionSpy();
+
+    const year = $('#year');
+    if (year) year.textContent = String(new Date().getFullYear());
+
+    let data = null;
+    try {
+        const res = await fetch('/data/profile.json');
+        if (!res.ok) throw new Error(`profile.json responded ${res.status}`);
+        data = await res.json();
+    } catch (err) {
+        console.error('Could not load profile data:', err);
+    }
+
+    if (data) {
+        renderMetrics(data);
+        renderWork(data.projects);
+        renderExperience(data.experience);
+        renderSkills(data.skills);
+        renderEducation(data.education);
+        renderCertifications(data.certifications);
+        initCopyResume(data);
+    }
+
+    // Runs last so it also picks up the nodes rendered above.
+    initReveal();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+} else {
+    boot();
+}
