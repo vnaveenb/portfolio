@@ -39,16 +39,19 @@ function fxPreference() {
     catch { return null; }
 }
 
-/* Can this machine render it at all? Deliberately only hard limits.
+/* Can this machine run the type layer? Deliberately only hard limits.
  *
- * There used to be a `(hover: hover)` test here as a proxy for "desktop". It
- * was wrong: a Windows laptop with a touchscreen reports `hover: none` and
- * was silently refused the entire feature despite a 1080p viewport and a
- * discrete GPU. Width and WebGL are the things that actually matter. */
+ * WebGL is *not* tested here any more. The design — pinned spreads, masked
+ * word reveals, the hero name docking into the header — is transforms and
+ * opacity, and wants no GPU at all. motion.js checks for WebGL separately
+ * and only to decide whether to add the schematics on top.
+ *
+ * A `(hover: hover)` test also used to live here as a proxy for "desktop".
+ * It was wrong: a Windows laptop with a touchscreen reports `hover: none`
+ * and was silently refused the whole feature despite a 1080p viewport. */
 function fxIsPossible() {
     return window.matchMedia('(min-width: 1024px)').matches
-        && !(navigator.deviceMemory && navigator.deviceMemory < 4)
-        && hasWebGL();
+        && !(navigator.deviceMemory && navigator.deviceMemory < 4);
 }
 
 /* Does this visitor want it?
@@ -77,7 +80,6 @@ function explain(possible, wanted) {
     if (possible && wanted) return;
     const why = [];
     if (!window.matchMedia('(min-width: 1024px)').matches) why.push('viewport under 1024px');
-    if (!hasWebGL()) why.push('no WebGL context');
     if (navigator.deviceMemory && navigator.deviceMemory < 4) why.push(`deviceMemory ${navigator.deviceMemory}GB`);
     if (!wanted) {
         why.push(fxPreference() === 'off' || new URLSearchParams(window.location.search).get('motion') === 'off'
@@ -88,6 +90,21 @@ function explain(possible, wanted) {
         `naveenb.dev: motion layer off (${why.join(', ')}). ` +
         'Force it with ?motion=on, or use the Motion switch in the header.'
     );
+}
+
+/* Put every masked word back on screen, unconditionally.
+ *
+ * Dropping the .fx classes is not enough on its own. By the time the motion
+ * layer can fail, GSAP has usually already written `transform: translateY(110%)`
+ * as an *inline* style on each word — and inline beats the stylesheet, so
+ * removing the class would leave the text hidden with no rule left to blame.
+ * This is the difference between a degraded page and a blank one. */
+function unmask() {
+    document.documentElement.classList.remove('fx', 'fx-pending', 'fx-gl');
+    document.querySelectorAll('.mask__in').forEach(el => {
+        el.style.transform = '';
+        el.style.opacity = '';
+    });
 }
 
 /* ------------------------------------------------------------------ chrome */
@@ -256,15 +273,17 @@ function boot() {
     explain(possible, wanted);
 
     if (possible && wanted && PROFILE) {
-        import('/js/scenes.js')
+        import('/js/motion.js')
             .then(mod => mod.start(PROFILE))
             .catch(err => {
-                // A failed scene layer must never cost anyone the page.
+                // A failed motion layer must never cost anyone the page — and
+                // must never leave the masked text hidden.
                 console.error('naveenb.dev: motion layer failed, staying static.', err);
-                document.documentElement.classList.remove('fx');
+                unmask();
                 initStaticReveal();
             });
     } else {
+        unmask();
         initStaticReveal();
     }
 }

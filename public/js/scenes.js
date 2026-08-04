@@ -570,23 +570,17 @@ function resetGraph(g) {
     g.edges.forEach(edge => { edge.v = 0.08; edge.tint = 0; edge.pulse = -1; });
 }
 
-/* -------------------------------------------------------------------- run */
+/* ------------------------------------------------------------------ stage */
 
-export async function start(profile) {
-    await Promise.all([
-        loadScript('/vendor/gsap.min.js'),
-        loadScript('/vendor/lenis.min.js'),
-    ]);
-    await loadScript('/vendor/ScrollTrigger.min.js');
-
-    const { gsap, ScrollTrigger, Lenis } = window;
-    if (!gsap || !ScrollTrigger || !Lenis) throw new Error('motion libraries missing');
-    gsap.registerPlugin(ScrollTrigger);
-
-    const canvas = document.getElementById('gl');
-    const labelHost = document.getElementById('labels');
-    if (!canvas || !labelHost) throw new Error('stage markup missing');
-
+/* Layer 2.
+ *
+ * This module used to own the scroll: it created Lenis, registered every
+ * ScrollTrigger and ran the whole page. That coupling is why a WebGL failure
+ * cost the visitor the entire design. It is now a passive stage — motion.js
+ * owns scroll and tells this what to draw. If createStage throws, layer 1
+ * carries on and the page is still art-directed.
+ */
+export function createStage({ profile, canvas, labelHost }) {
     const renderer = new THREE.WebGLRenderer({
         canvas,
         alpha: true,
@@ -607,168 +601,90 @@ export async function start(profile) {
     });
     if (!graphs.size) throw new Error('no scenes could be built');
 
-    /* Only now does the layout change, so nothing above has to measure a
-     * document that is about to be rewritten by pinning. */
-    document.documentElement.classList.add('fx');
-
-    let active = graphs.get(profile.projects[0].id);
+    let active = graphs.get(profile.projects[0].id) || graphs.values().next().value;
     active.group.visible = true;
 
-    const railLinks = new Map(
-        Array.from(document.querySelectorAll('[data-rail]'))
-            .map(a => [a.dataset.rail, a])
-    );
-
-    function setActive(id) {
-        const next = graphs.get(id);
-        if (!next || next === active) return;
-        active.group.visible = false;
-        active.labels.forEach(el => { if (el) el.style.display = 'none'; });
-        active = next;
-        active.group.visible = true;
-        railLinks.forEach((el, key) => el.classList.toggle('is-active', key === id));
-    }
-
-    /* --- smooth scroll --- */
-    const lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 1, touchMultiplier: 1.6 });
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
-
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-        link.addEventListener('click', (event) => {
-            const id = link.getAttribute('href').slice(1);
-            const target = document.getElementById(id);
-            if (!target) return;
-            event.preventDefault();
-            lenis.scrollTo(target, { offset: -1 });
-        });
-    });
-
-    /* --- pin one ScrollTrigger per project --- */
-    document.querySelectorAll('.scene').forEach(section => {
-        const id = section.dataset.scene;
-        const g = graphs.get(id);
-        if (!g) return;
-
-        const tier = Number(section.dataset.tier);
-        const panel = section.querySelector('.panel');
-        const hold = tier === 1 ? 1.5 : 0.85; // viewport-heights of pinned scroll
-
-        ScrollTrigger.create({
-            trigger: section,
-            start: 'top top',
-            end: () => `+=${window.innerHeight * hold}`,
-            pin: true,
-            pinSpacing: true,
-            scrub: true,
-            invalidateOnRefresh: true,
-            onToggle: (self) => { if (self.isActive) setActive(id); },
-            onUpdate: (self) => {
-                g.progress = self.progress;
-                if (panel) {
-                    // Hand the frame over cleanly at both ends of the pin.
-                    const inOpacity = ramp(self.progress, 0, 0.06);
-                    const outOpacity = 1 - ramp(self.progress, 0.9, 1);
-                    panel.style.opacity = String(Math.min(inOpacity, outOpacity));
-                    panel.style.transform = `translateY(${(1 - inOpacity) * 18 - ramp(self.progress, 0.9, 1) * 18}px)`;
-                }
-            },
-        });
-    });
-
-    /* --- pointer parallax --- */
     const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
     window.addEventListener('pointermove', (event) => {
         pointer.tx = (event.clientX / window.innerWidth - 0.5) * 2;
         pointer.ty = (event.clientY / window.innerHeight - 0.5) * 2;
     }, { passive: true });
 
-    /* The panel occupies the left of the frame on wide screens, so the graph
-     * is pushed right to sit in the space that is actually free. */
-    function graphOffset() {
-        if (window.innerWidth < 1100) return 0.4;
-        return 1.9;
-    }
-
     const projected = new THREE.Vector3();
-    const clock = new THREE.Clock();
 
-    function render() {
-        const time = clock.getElapsedTime();
-
-        resetGraph(active);
-        active.step(active, active.progress);
-        syncGraph(active);
-
-        active.group.position.x = graphOffset();
-        // The whole graph breathes as one, which keeps nodes and edges welded
-        // together while still stopping a paused scene from looking frozen.
-        active.group.position.y = Math.sin(time * 0.33) * 0.07;
-        active.pointMat.uniforms.uTime.value = time;
-
-        pointer.x = lerp(pointer.x, pointer.tx, 0.05);
-        pointer.y = lerp(pointer.y, pointer.ty, 0.05);
-
-        const target = active.camera || { z: 12, tilt: 0 };
-        camera.position.z = lerp(camera.position.z, target.z, 0.06);
-        camera.position.x = lerp(camera.position.x, pointer.x * 0.55, 0.08);
-        camera.position.y = lerp(camera.position.y, -pointer.y * 0.4, 0.08);
-        active.group.rotation.y = lerp(active.group.rotation.y, pointer.x * 0.08 + target.tilt, 0.05);
-        active.group.rotation.x = lerp(active.group.rotation.x, -pointer.y * 0.05, 0.05);
-        camera.lookAt(active.group.position.x * 0.35, 0, 0);
-
-        // Project against this frame's matrices, not last frame's, or every
-        // label trails its node by one frame during the camera moves.
-        active.group.updateMatrixWorld(true);
-        camera.updateMatrixWorld(true);
-        camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
-
-        // Labels ride along with the nodes they belong to.
-        const halfW = window.innerWidth / 2;
-        const halfH = window.innerHeight / 2;
-        active.labels.forEach((el, i) => {
-            if (!el) return;
-            const node = active.nodes[i];
-            if (node.v < 0.04) { el.style.display = 'none'; return; }
-            projected.set(node.p[0], node.p[1], node.p[2]);
-            active.group.localToWorld(projected);
-            projected.project(camera);
-            el.style.display = '';
-            el.style.transform =
-                `translate(-50%, 0) translate(${projected.x * halfW + halfW}px, ${-projected.y * halfH + halfH + 14}px)`;
-            el.style.opacity = String(clamp(node.v * 1.2, 0, 1));
-            el.classList.toggle('is-hot', node.tint < 0.5 && node.v > 0.5);
-            el.classList.toggle('is-bad', node.tint > 1.2);
-        });
-
-        renderer.render(scene, camera);
+    /* The type occupies the left of the frame, so the schematic is pushed
+     * right into the space that is actually free. */
+    function graphOffset() {
+        return window.innerWidth < 1100 ? 0.4 : 2.1;
     }
 
-    gsap.ticker.add(render);
+    return {
+        setActive(id) {
+            const next = graphs.get(id);
+            if (!next || next === active) return;
+            active.group.visible = false;
+            active.labels.forEach(el => { if (el) el.style.display = 'none'; });
+            active = next;
+            active.group.visible = true;
+        },
 
-    /* --- resize --- */
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        renderer.setSize(window.innerWidth, window.innerHeight, false);
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => ScrollTrigger.refresh(), 180);
-    }, { passive: true });
+        setProgress(id, progress) {
+            const g = graphs.get(id);
+            if (g) g.progress = progress;
+        },
 
-    /* Web fonts change the height of every panel, which changes where every
-     * pin starts. Measure again once they have actually landed. */
-    if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(() => ScrollTrigger.refresh());
-    }
+        resize() {
+            renderer.setSize(window.innerWidth, window.innerHeight, false);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        },
 
-    ScrollTrigger.refresh();
+        render(time) {
+            resetGraph(active);
+            active.step(active, active.progress);
+            syncGraph(active);
 
-    /* If the visitor arrived on a deep link, land them on it after pinning
-     * has rewritten the document height. */
-    if (window.location.hash) {
-        const target = document.getElementById(window.location.hash.slice(1));
-        if (target) requestAnimationFrame(() => lenis.scrollTo(target, { immediate: true }));
-    }
+            active.group.position.x = graphOffset();
+            // The whole graph breathes as one, which keeps nodes and edges
+            // welded together while stopping a paused scene looking frozen.
+            active.group.position.y = Math.sin(time * 0.33) * 0.07;
+            active.pointMat.uniforms.uTime.value = time;
+
+            pointer.x = lerp(pointer.x, pointer.tx, 0.05);
+            pointer.y = lerp(pointer.y, pointer.ty, 0.05);
+
+            const target = active.camera || { z: 12, tilt: 0 };
+            camera.position.z = lerp(camera.position.z, target.z, 0.06);
+            camera.position.x = lerp(camera.position.x, pointer.x * 0.55, 0.08);
+            camera.position.y = lerp(camera.position.y, -pointer.y * 0.4, 0.08);
+            active.group.rotation.y = lerp(active.group.rotation.y, pointer.x * 0.08 + target.tilt, 0.05);
+            active.group.rotation.x = lerp(active.group.rotation.x, -pointer.y * 0.05, 0.05);
+            camera.lookAt(active.group.position.x * 0.35, 0, 0);
+
+            // Project against this frame's matrices, not last frame's, or
+            // every label trails its node during the camera moves.
+            active.group.updateMatrixWorld(true);
+            camera.updateMatrixWorld(true);
+            camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+
+            const halfW = window.innerWidth / 2;
+            const halfH = window.innerHeight / 2;
+            active.labels.forEach((el, i) => {
+                if (!el) return;
+                const node = active.nodes[i];
+                if (node.v < 0.04) { el.style.display = 'none'; return; }
+                projected.set(node.p[0], node.p[1], node.p[2]);
+                active.group.localToWorld(projected);
+                projected.project(camera);
+                el.style.display = '';
+                el.style.transform =
+                    `translate(-50%, 0) translate(${projected.x * halfW + halfW}px, ${-projected.y * halfH + halfH + 14}px)`;
+                el.style.opacity = String(clamp(node.v * 1.2, 0, 1));
+                el.classList.toggle('is-hot', node.tint < 0.5 && node.v > 0.5);
+                el.classList.toggle('is-bad', node.tint > 1.2);
+            });
+
+            renderer.render(scene, camera);
+        },
+    };
 }

@@ -1,17 +1,16 @@
 /* naveenb.dev
  *
- * One stylesheet, two layouts, one set of markup.
+ * One stylesheet, three layers of the same markup.
  *
- *   default        the dense, static, fully readable page. This is what
- *                  crawlers, no-JS visitors, phones, reduced-motion and
- *                  anything without WebGL get. It is not a degraded mode —
- *                  it is the page.
- *   html.fx        the same document with the WebGL stage switched on:
- *                  project sections become pinned scenes and the panels
- *                  narrate whatever is drawn behind them.
+ *   default        the static page. Crawlers, no-JS, phones, reduced-motion.
+ *                  Complete and readable. Not a degraded mode — it is the page.
+ *   html.fx        the type layer: sections pin, titles crop the frame, words
+ *                  wipe up from behind masks. Needs no GPU.
+ *   html.fx-gl     the WebGL layer on top: schematics behind the type.
  *
- * Committed to dark. There is no theme toggle; the scenes are lit for one
- * palette and authoring a second would halve the quality of both.
+ * Committed to dark. Archivo carries display and body — it has a width axis,
+ * which is what lets the headlines go wide and tight at size. JetBrains Mono
+ * carries every label, index and piece of data.
  */
 
 /* --------------------------------------------------------------- tokens */
@@ -26,11 +25,11 @@
     --accent: #7dd3fc;
     --accent-dim: rgba(125, 211, 252, 0.14);
 
-    --sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --sans: 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
     --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
-    --wrap: 1180px;
-    --gutter: clamp(1.25rem, 4vw, 3.5rem);
+    --wrap: 1280px;
+    --gutter: clamp(1.25rem, 4vw, 4rem);
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -38,9 +37,9 @@
 
 html {
     background: var(--bg);
-    scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
 }
+html:not(.fx) { scroll-behavior: smooth; }
 
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -55,14 +54,12 @@ body {
     margin: 0;
     font-family: var(--sans);
     font-size: 16px;
-    line-height: 1.65;
+    line-height: 1.6;
     color: var(--txt);
     background-color: var(--bg);
-    /* A very slow ground gradient, so the static page is not a flat black
-     * rectangle on visitors where the WebGL stage never arrives. */
     background-image:
-        radial-gradient(60rem 40rem at 78% -10%, rgba(125, 211, 252, 0.07), transparent 60%),
-        radial-gradient(50rem 40rem at 0% 42%, rgba(125, 211, 252, 0.04), transparent 60%);
+        radial-gradient(64rem 44rem at 82% -12%, rgba(125, 211, 252, 0.075), transparent 62%),
+        radial-gradient(52rem 42rem at -6% 46%, rgba(125, 211, 252, 0.045), transparent 62%);
     background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
@@ -98,8 +95,7 @@ a { color: inherit; }
 
 .skip {
     position: fixed;
-    top: 0.75rem;
-    left: 0.75rem;
+    top: 0.75rem; left: 0.75rem;
     z-index: 100;
     transform: translateY(-160%);
     padding: 0.6rem 1rem;
@@ -112,15 +108,48 @@ a { color: inherit; }
 }
 .skip:focus { transform: none; }
 
-/* --------------------------------------------------------------- headings */
+/* ------------------------------------------------------------ word masks */
 
-.h2 {
-    margin: 0 0 1.75rem;
-    font-size: clamp(1.6rem, 3.2vw, 2.2rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
+/* Inert by default: the words simply sit there and read normally. The type
+ * layer arms them, and boot.js pre-arms them in <head> so nothing flashes in
+ * before it can animate. */
+.mask {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    /* Descenders would otherwise be clipped by the overflow. */
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
 }
+.mask__in { display: inline-block; will-change: transform; }
+
+html.fx-pending .mask__in,
+html.fx .mask__in { transform: translateY(110%); }
+
+/* Dead man's switch. If every module fails to load, the masked text would
+ * stay hidden forever — so reveal it unconditionally after three seconds.
+ * The type layer always beats this; a catastrophe does not. */
+html.fx-pending .mask__in { animation: mask-failsafe 0s linear 3s forwards; }
+@keyframes mask-failsafe { to { transform: none; } }
+
+/* --------------------------------------------------------------- display */
+
+/* The headline register. Archivo's width axis pushed wide, tracking pulled
+ * tight, sized against the viewport so it always crops the frame. */
+.display {
+    margin: 0;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-variation-settings: 'wdth' 112, 'wght' 700;
+    letter-spacing: -0.045em;
+    line-height: 0.86;
+    text-transform: uppercase;
+    text-wrap: balance;
+}
+.display--xl { font-size: clamp(3.2rem, 13vw, 13rem); }
+.display--lg { font-size: clamp(2.6rem, 8.5vw, 8rem); }
+.display--md { font-size: clamp(2.2rem, 6vw, 5rem); }
+.display--sm { font-size: clamp(1.7rem, 3.4vw, 2.6rem); letter-spacing: -0.035em; }
 
 .h3 {
     margin: 2.75rem 0 1rem;
@@ -143,30 +172,25 @@ a { color: inherit; }
 
 /* ----------------------------------------------------------------- stage */
 
-/* The WebGL canvas. Fixed behind everything, and only ever revealed by the
- * .fx class — which main.js adds after confirming the visitor both can and
- * wants to render it. */
 .stage {
     display: none;
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
+    /* Texture, not subject. The type has to win the frame. */
+    opacity: 0.62;
 }
-html.fx .stage { display: block; }
+html.fx-gl .stage { display: block; }
 
 .stage canvas { display: block; width: 100%; height: 100%; }
-
 .stage__labels { position: absolute; inset: 0; overflow: hidden; }
 
-/* Node labels are HTML rather than canvas text: crisper at any DPR, and free
- * to lay out without burning a texture per string. */
 .node-label {
     position: absolute;
-    top: 0;
-    left: 0;
-    font: 500 0.66rem/1 var(--mono);
-    letter-spacing: 0.1em;
+    top: 0; left: 0;
+    font: 500 0.62rem/1 var(--mono);
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--txt-dim);
     white-space: nowrap;
@@ -197,7 +221,7 @@ html.fx .stage { display: block; }
     gap: 1.5rem;
     max-width: var(--wrap);
     margin-inline: auto;
-    padding: 1rem var(--gutter);
+    padding: 1.05rem var(--gutter);
 }
 
 .brand {
@@ -205,18 +229,25 @@ html.fx .stage { display: block; }
     align-items: center;
     gap: 0.6rem;
     margin-right: auto;
-    font: 500 0.9rem/1 var(--mono);
     text-decoration: none;
 }
+.brand__name {
+    font-weight: 600;
+    font-variation-settings: 'wdth' 108, 'wght' 600;
+    font-size: 0.95rem;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+}
+/* The hero name flies into this slot, so during the flight the real one is
+ * hidden and swapped in at the end. Same string, same face — invisible cut. */
+html.fx .brand__name { opacity: 0; }
 
 .brand__dot {
-    width: 7px;
-    height: 7px;
+    width: 7px; height: 7px;
     border-radius: 50%;
     background: var(--accent);
     animation: pulse 3.6s var(--ease) infinite;
 }
-
 @keyframes pulse {
     0%, 70%, 100% { box-shadow: 0 0 0 0 rgba(125, 211, 252, 0.45); }
     35% { box-shadow: 0 0 0 7px rgba(125, 211, 252, 0); }
@@ -225,15 +256,15 @@ html.fx .stage { display: block; }
 .hdr__nav {
     display: flex;
     gap: 1.4rem;
-    font: 400 0.82rem/1 var(--mono);
+    font: 400 0.78rem/1 var(--mono);
+    letter-spacing: 0.04em;
 }
 .hdr__nav a {
     color: var(--muted);
     text-decoration: none;
     transition: color 0.2s var(--ease);
 }
-.hdr__nav a:hover,
-.hdr__nav a[aria-current] { color: var(--txt); }
+.hdr__nav a:hover, .hdr__nav a[aria-current] { color: var(--txt); }
 
 .motion {
     display: inline-flex;
@@ -244,7 +275,7 @@ html.fx .stage { display: block; }
     border-radius: 999px;
     background: transparent;
     color: var(--muted);
-    font: 400 0.7rem/1 var(--mono);
+    font: 400 0.68rem/1 var(--mono);
     cursor: pointer;
     transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
 }
@@ -257,44 +288,66 @@ html.fx .stage { display: block; }
     .motion { display: none; }
 }
 
-/* ----------------------------------------------------------------- intro */
+/* ------------------------------------------------------------------ hero */
 
 main { position: relative; z-index: 1; }
 
-.intro {
+.hero {
     position: relative;
-    padding: clamp(8rem, 20vh, 12rem) 0 clamp(4rem, 9vh, 7rem);
+    padding: clamp(9rem, 22vh, 14rem) 0 clamp(4rem, 9vh, 7rem);
 }
-html.fx .intro {
+html.fx .hero {
     min-height: 100svh;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding-block: 0;
 }
 
-.intro__title {
+.hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.4rem;
+    margin: 0 0 clamp(1.5rem, 4vh, 2.75rem);
+    font: 400 0.72rem/1 var(--mono);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.hero__meta .mask + .mask { position: relative; }
+.hero__meta .mask + .mask::before {
+    content: '';
+    position: absolute;
+    left: -0.75rem; top: 50%;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.5;
+}
+
+/* The single biggest thing on the page. transform-origin is top-left because
+ * this element flies into the header slot on scroll. */
+.hero__name {
     margin: 0;
-    font-size: clamp(2.6rem, 8vw, 5.4rem);
-    font-weight: 600;
-    letter-spacing: -0.045em;
-    line-height: 0.98;
+    font-weight: 700;
+    font-variation-settings: 'wdth' 116, 'wght' 700;
+    font-size: clamp(3.2rem, 13.5vw, 13rem);
+    line-height: 0.82;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    transform-origin: left top;
+    will-change: transform;
 }
+.hero__line { display: block; }
 
-.intro__role {
-    margin: 1.1rem 0 0;
-    font: 400 clamp(0.85rem, 1.6vw, 1rem)/1.5 var(--mono);
+.hero__lede {
+    margin: clamp(1.75rem, 4vh, 2.5rem) 0 0;
+    max-width: 44ch;
+    font-size: clamp(1.02rem, 1.5vw, 1.22rem);
     color: var(--txt-dim);
 }
-.intro__loc { color: var(--muted); }
 
-.intro__lede {
-    margin: 1.75rem 0 0;
-    max-width: 46ch;
-    font-size: clamp(1.02rem, 1.7vw, 1.2rem);
-    color: var(--txt-dim);
-}
-
-.intro__actions {
+.hero__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
@@ -309,8 +362,8 @@ html.fx .intro {
     align-items: center;
     gap: 0.7rem;
     margin: 0;
-    font: 400 0.68rem/1 var(--mono);
-    letter-spacing: 0.22em;
+    font: 400 0.66rem/1 var(--mono);
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--muted);
 }
@@ -318,8 +371,7 @@ html.fx .cue { display: flex; }
 
 .cue__line {
     display: block;
-    width: 46px;
-    height: 1px;
+    width: 46px; height: 1px;
     background: linear-gradient(90deg, var(--accent), transparent);
     transform-origin: left;
     animation: sweep 2.8s var(--ease) infinite;
@@ -331,12 +383,10 @@ html.fx .cue { display: flex; }
 
 /* ------------------------------------------------------------------ rail */
 
-/* The escape hatch. Eight ticks down the right edge: any project is one click
- * away, so nobody has to scroll through the cinema to reach a repo link. */
 .rail {
     display: none;
     position: fixed;
-    right: max(1rem, calc((100vw - var(--wrap)) / 2 - 2.5rem));
+    right: max(1rem, calc((100vw - var(--wrap)) / 2 - 2.25rem));
     top: 50%;
     transform: translateY(-50%);
     z-index: 30;
@@ -345,19 +395,17 @@ html.fx .rail { display: block; }
 
 .rail ol {
     list-style: none;
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0;
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
 }
-
 .rail a {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 0.7rem;
-    padding: 0.32rem 0;
+    padding: 0.3rem 0;
     text-decoration: none;
     color: var(--muted);
     transition: color 0.25s var(--ease);
@@ -365,7 +413,7 @@ html.fx .rail { display: block; }
 .rail a:hover, .rail a.is-active { color: var(--txt); }
 
 .rail__n {
-    font: 400 0.62rem/1 var(--mono);
+    font: 400 0.6rem/1 var(--mono);
     opacity: 0;
     transform: translateX(6px);
     transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
@@ -373,7 +421,7 @@ html.fx .rail { display: block; }
 .rail:hover .rail__n { opacity: 0.6; transform: none; }
 
 .rail__label {
-    font: 400 0.7rem/1 var(--mono);
+    font: 400 0.68rem/1 var(--mono);
     max-width: 0;
     overflow: hidden;
     white-space: nowrap;
@@ -384,96 +432,88 @@ html.fx .rail { display: block; }
 
 .rail a::after {
     content: '';
-    width: 18px;
-    height: 1px;
+    width: 16px; height: 1px;
     background: currentColor;
     opacity: 0.4;
     transition: width 0.3s var(--ease), opacity 0.3s var(--ease), background 0.3s var(--ease);
 }
 .rail a.is-active::after { width: 30px; opacity: 1; background: var(--accent); }
 
-@media (max-width: 1180px) { html.fx .rail { display: none; } }
+@media (max-width: 1240px) { html.fx .rail { display: none; } }
 
 /* ---------------------------------------------------------------- scenes */
 
-/* Static layout: a dense grid of cards. */
+/* Static: an editorial list. Full-bleed rows, rules between, big-but-sane
+ * titles. No cards, no grid — a grid of eight cards is what "template" looks
+ * like, and this has to read as designed even with no JavaScript at all. */
 .scenes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1rem;
     max-width: var(--wrap);
-    margin: clamp(2rem, 6vh, 4rem) auto clamp(4rem, 10vh, 7rem);
+    margin: clamp(3rem, 8vh, 6rem) auto clamp(4rem, 10vh, 7rem);
     padding-inline: var(--gutter);
 }
 
-.scene { display: block; }
+.scene { border-top: 1px solid var(--line); }
+.scene:last-child { border-bottom: 1px solid var(--line); }
+.scene__inner { padding: clamp(2.25rem, 5vh, 3.5rem) 0; }
 
-.panel {
-    height: 100%;
-    padding: 1.9rem 1.7rem;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.022), transparent);
-    transition: border-color 0.3s var(--ease);
-}
-.panel:hover { border-color: var(--line-strong); }
-
-.panel__idx {
+.scene__idx {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    margin: 0 0 1.15rem;
-    font: 400 0.68rem/1 var(--mono);
-    letter-spacing: 0.1em;
+    gap: 0.7rem;
+    margin: 0 0 1.1rem;
+    font: 400 0.7rem/1 var(--mono);
+    letter-spacing: 0.14em;
     color: var(--muted);
 }
-.panel__rule {
-    flex: 1;
-    max-width: 2.5rem;
-    height: 1px;
-    background: var(--line-strong);
-}
-.panel__of { opacity: 0.55; }
+.scene__rule { width: 2.25rem; height: 1px; background: var(--line-strong); }
+.scene__of { opacity: 0.5; }
 
 .live {
     margin-left: auto;
-    padding: 0.2rem 0.5rem;
+    padding: 0.2rem 0.55rem;
     border: 1px solid var(--accent-dim);
     border-radius: 999px;
     background: var(--accent-dim);
     color: var(--accent);
-    font-size: 0.62rem;
-    letter-spacing: 0.14em;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
 }
 
-.panel__kicker {
-    margin: 0 0 0.35rem;
-    font-size: 0.88rem;
+.scene__title {
+    margin: 0 0 1.5rem;
+    font-weight: 700;
+    font-variation-settings: 'wdth' 112, 'wght' 700;
+    font-size: clamp(2rem, 6.5vw, 5.5rem);
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+    text-transform: uppercase;
+}
+
+.scene__foot {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
+}
+@media (max-width: 820px) { .scene__foot { grid-template-columns: 1fr; } }
+
+.scene__kicker {
+    margin: 0 0 0.5rem;
+    font-size: 0.92rem;
     color: var(--accent);
 }
-
-.panel__title {
-    margin: 0 0 0.85rem;
-    font-size: clamp(1.35rem, 2.6vw, 1.85rem);
-    font-weight: 600;
-    letter-spacing: -0.025em;
-    line-height: 1.12;
-}
-
-.panel__desc {
-    margin: 0 0 1.35rem;
-    max-width: 52ch;
+.scene__desc {
+    margin: 0;
+    max-width: 54ch;
     color: var(--txt-dim);
     font-size: 0.97rem;
 }
+.scene__links { display: flex; flex-wrap: wrap; gap: 0.55rem; }
 
-.panel__links { display: flex; flex-wrap: wrap; gap: 0.55rem; }
-
-/* ---- cinema layout: sections go full-viewport, panel sits left ---- */
+/* ---- type layer: every project is a full-viewport spread ---- */
 
 html.fx .scenes {
-    display: block;
     max-width: none;
     margin: 0;
     padding-inline: 0;
@@ -484,36 +524,39 @@ html.fx .scene {
     min-height: 100svh;
     display: flex;
     align-items: center;
+    border: 0;
     padding-inline: var(--gutter);
 }
 
-html.fx .panel {
+html.fx .scene__inner {
     position: relative;
-    width: min(30rem, 42vw);
-    margin-left: max(0px, calc((100vw - var(--wrap)) / 2));
-    height: auto;
+    width: 100%;
+    max-width: var(--wrap);
+    margin-inline: auto;
     padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: none;
-    /* The scene is drawn behind the text, so the text needs its own ground. */
-    text-shadow: 0 1px 22px rgba(6, 7, 10, 0.95), 0 0 60px rgba(6, 7, 10, 0.85);
 }
-html.fx .panel::before {
+
+/* A soft ground under the type so it stays legible over the schematic,
+ * without boxing it in — no border, no card, just a fade. */
+html.fx-gl .scene__inner::before {
     content: '';
     position: absolute;
-    inset: -8vh -14vw -8vh -100vw;
+    inset: -14vh -12vw;
     z-index: -1;
-    background: linear-gradient(90deg, rgba(6, 7, 10, 0.93) 55%, rgba(6, 7, 10, 0) 100%);
+    background:
+        radial-gradient(60% 55% at 34% 50%, rgba(6, 7, 10, 0.94) 0%, rgba(6, 7, 10, 0.72) 45%, rgba(6, 7, 10, 0) 78%);
     pointer-events: none;
 }
-html.fx .panel:hover { border-color: transparent; }
 
-html.fx .panel__title { font-size: clamp(1.9rem, 3.6vw, 3rem); }
-html.fx .panel__desc { font-size: 1.02rem; }
+html.fx .scene__title {
+    font-size: clamp(2.6rem, 9.5vw, 9rem);
+    margin-bottom: clamp(1.5rem, 4vh, 3rem);
+}
+html.fx .scene__desc { font-size: 1.03rem; }
+html.fx .scene__foot { grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); }
 
 @media (max-width: 900px) {
-    html.fx .panel { width: auto; margin-left: 0; }
+    html.fx .scene__foot { grid-template-columns: 1fr; }
 }
 
 /* ----------------------------------------------------------------- stack */
@@ -522,7 +565,7 @@ html.fx .panel__desc { font-size: 1.02rem; }
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
-    margin: 0 0 1.35rem;
+    margin: 0 0 1.1rem;
     padding: 0;
     list-style: none;
 }
@@ -530,7 +573,7 @@ html.fx .panel__desc { font-size: 1.02rem; }
     padding: 0.22rem 0.55rem;
     border: 1px solid var(--line);
     border-radius: 5px;
-    font: 400 0.7rem/1.5 var(--mono);
+    font: 400 0.68rem/1.5 var(--mono);
     color: var(--txt-dim);
     background: rgba(255, 255, 255, 0.018);
 }
@@ -546,7 +589,7 @@ html.fx .panel__desc { font-size: 1.02rem; }
     border-radius: 8px;
     background: transparent;
     color: var(--txt-dim);
-    font: 400 0.8rem/1 var(--mono);
+    font: 400 0.78rem/1 var(--mono);
     text-decoration: none;
     cursor: pointer;
     transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
@@ -563,23 +606,16 @@ html.fx .panel__desc { font-size: 1.02rem; }
     border-color: var(--accent-dim);
     background: var(--accent-dim);
 }
-.lnk--live:hover {
-    color: #04121a;
-    background: var(--accent);
-    border-color: var(--accent);
-}
+.lnk--live:hover { color: #04121a; background: var(--accent); border-color: var(--accent); }
 
-.lnk--big { padding: 0.7rem 1.1rem; font-size: 0.85rem; }
+.lnk--big { padding: 0.7rem 1.1rem; font-size: 0.82rem; }
 
 /* -------------------------------------------------------------------- cv */
 
 .cv, .contact, .ftr { position: relative; z-index: 1; background: var(--bg); }
 
-.cv {
-    padding: clamp(4rem, 12vh, 8rem) 0;
-    border-top: 1px solid var(--line);
-}
-html.fx .cv { background: linear-gradient(180deg, rgba(6, 7, 10, 0.88), var(--bg) 16%); }
+.cv { padding: clamp(4rem, 12vh, 8rem) 0; border-top: 1px solid var(--line); }
+html.fx-gl .cv { background: linear-gradient(180deg, rgba(6, 7, 10, 0.9), var(--bg) 14%); }
 
 .outcomes {
     display: grid;
@@ -590,21 +626,22 @@ html.fx .cv { background: linear-gradient(180deg, rgba(6, 7, 10, 0.88), var(--bg
 
 .outcome__value {
     margin: 0;
-    font-size: clamp(2.4rem, 5.5vw, 3.6rem);
-    font-weight: 600;
-    letter-spacing: -0.04em;
-    line-height: 1;
+    font-weight: 700;
+    font-variation-settings: 'wdth' 110, 'wght' 700;
+    font-size: clamp(2.8rem, 6.5vw, 4.6rem);
+    letter-spacing: -0.05em;
+    line-height: 0.9;
     color: var(--accent);
 }
 .outcome__label {
-    margin: 0.55rem 0 0.5rem;
+    margin: 0.6rem 0 0.5rem;
     font-size: 1rem;
     font-weight: 500;
 }
 .outcome__note {
     margin: 0;
     max-width: 34ch;
-    font-size: 0.87rem;
+    font-size: 0.86rem;
     line-height: 1.55;
     color: var(--muted);
 }
@@ -617,25 +654,28 @@ html.fx .cv { background: linear-gradient(180deg, rgba(6, 7, 10, 0.88), var(--bg
 }
 @media (max-width: 880px) { .cv__grid { grid-template-columns: 1fr; } }
 
+.cv__main .display { margin-bottom: 2.25rem; }
+
 .role { margin-bottom: 3rem; }
 .role:last-child { margin-bottom: 0; }
 .role__head { margin-bottom: 1.1rem; }
 
 .role__title {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.22rem;
     font-weight: 600;
-    letter-spacing: -0.015em;
+    font-variation-settings: 'wdth' 106, 'wght' 600;
+    letter-spacing: -0.02em;
 }
 .role__meta {
     margin: 0.25rem 0 0;
-    font: 400 0.8rem/1.5 var(--mono);
+    font: 400 0.78rem/1.5 var(--mono);
     color: var(--txt-dim);
 }
 .role__dates {
     margin: 0.35rem 0 0;
-    font: 400 0.72rem/1 var(--mono);
-    letter-spacing: 0.08em;
+    font: 400 0.7rem/1 var(--mono);
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
 }
@@ -648,15 +688,13 @@ html.fx .cv { background: linear-gradient(180deg, rgba(6, 7, 10, 0.88), var(--bg
     padding-left: 1.4rem;
     max-width: 62ch;
     color: var(--txt-dim);
-    font-size: 0.95rem;
+    font-size: 0.94rem;
 }
 .role__points li::before {
     content: '';
     position: absolute;
-    left: 0;
-    top: 0.7em;
-    width: 12px;
-    height: 1px;
+    left: 0; top: 0.7em;
+    width: 12px; height: 1px;
     background: var(--line-strong);
 }
 
@@ -672,13 +710,13 @@ html.fx .cv { background: linear-gradient(180deg, rgba(6, 7, 10, 0.88), var(--bg
 .cv__portrait:hover { filter: none; }
 .cv__portrait img { width: 100%; }
 
-.cv__bio { margin: 0; font-size: 0.92rem; color: var(--muted); }
+.cv__bio { margin: 0; font-size: 0.9rem; color: var(--muted); }
 
 .skills { display: grid; gap: 1.1rem; }
 .skill__name {
     margin: 0 0 0.45rem;
-    font: 400 0.7rem/1 var(--mono);
-    letter-spacing: 0.1em;
+    font: 400 0.68rem/1 var(--mono);
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--muted);
 }
@@ -701,35 +739,22 @@ html.fx .cv { background: linear-gradient(180deg, rgba(6, 7, 10, 0.88), var(--bg
     text-decoration: none;
 }
 .cred__name a:hover { text-decoration: underline; }
-.cred__org { font-size: 0.85rem; color: var(--txt-dim); }
+.cred__org { font-size: 0.84rem; color: var(--txt-dim); }
 .cred__when {
-    font: 400 0.7rem/1.4 var(--mono);
+    font: 400 0.68rem/1.4 var(--mono);
     letter-spacing: 0.06em;
     color: var(--muted);
 }
 
 /* --------------------------------------------------------------- contact */
 
-.contact {
-    padding: clamp(4rem, 12vh, 8rem) 0;
-    border-top: 1px solid var(--line);
-}
-
-.contact__title {
-    margin: 0;
-    max-width: 20ch;
-    font-size: clamp(1.8rem, 4.5vw, 3rem);
-    font-weight: 600;
-    letter-spacing: -0.035em;
-    line-height: 1.08;
-}
-
+.contact { padding: clamp(4rem, 12vh, 8rem) 0; border-top: 1px solid var(--line); }
+.contact__title { max-width: 14ch; }
 .contact__text {
-    margin: 1.25rem 0 2.25rem;
+    margin: 1.5rem 0 2.25rem;
     max-width: 48ch;
     color: var(--txt-dim);
 }
-
 .contact__links { display: flex; flex-wrap: wrap; gap: 0.7rem; }
 
 /* ---------------------------------------------------------------- footer */
@@ -737,7 +762,7 @@ html.fx .cv { background: linear-gradient(180deg, rgba(6, 7, 10, 0.88), var(--bg
 .ftr {
     padding: 2rem 0 2.5rem;
     border-top: 1px solid var(--line);
-    font: 400 0.75rem/1.6 var(--mono);
+    font: 400 0.72rem/1.6 var(--mono);
     color: var(--muted);
 }
 .ftr__inner {
@@ -763,14 +788,13 @@ html.fx .cv { background: linear-gradient(180deg, rgba(6, 7, 10, 0.88), var(--bg
     margin-bottom: 2.5rem;
 }
 .doc__head img {
-    width: 72px;
-    height: 72px;
+    width: 72px; height: 72px;
     border-radius: 50%;
     border: 1px solid var(--line);
     object-fit: cover;
 }
-.doc__head .h2 { margin: 0; }
-.doc__head p { margin: 0.3rem 0 0; font-size: 0.85rem; }
+.doc__head .display { margin: 0; }
+.doc__head p { margin: 0.35rem 0 0; font-size: 0.82rem; }
 
 .doc__lede { color: var(--txt-dim); }
 .doc__back { margin-top: 3rem; }
